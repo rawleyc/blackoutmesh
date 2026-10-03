@@ -281,10 +281,85 @@ html, body {
 
 /* ── Dispatch Panel ──────────────────────────────── */
 
+.panel-header-sub {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
 #dispatch-panel h3 {
     font-size: 0.9rem;
     font-weight: 700;
-    margin-bottom: 12px;
+}
+
+.badge-compact {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.control-row-inline {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+
+.control-row-inline input {
+    width: 100%;
+    text-align: center;
+}
+
+/* ── Live Multilingual Preview Box ─────────────────── */
+
+.preview-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    margin-top: 4px;
+}
+
+.preview-lang-tabs {
+    display: flex;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+}
+
+.preview-tab {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: background var(--transition), color var(--transition);
+}
+
+.preview-tab:hover {
+    color: var(--text-primary);
+}
+
+.preview-tab.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--accent-blue);
+}
+
+.preview-content {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    min-height: 40px;
+}
+
+.preview-content strong {
+    color: var(--accent-orange);
 }
 
 #dispatch-form {
@@ -368,6 +443,97 @@ output {
     word-break: break-all;
 }
 
+/* ── BLE Over-the-Air Status Card ─────────────────── */
+.ble-ota-card {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.ble-ota-card.broadcasting {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+}
+
+.ble-ota-card.inactive {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ble-ota-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+}
+
+.ble-ota-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: all 0.3s;
+}
+
+.ble-ota-card.broadcasting .ble-ota-indicator {
+    background: var(--accent-green);
+    box-shadow: 0 0 8px var(--accent-green);
+    animation: blePulse 1.8s infinite;
+}
+
+@keyframes blePulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.ble-ota-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.ble-served-badge {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--accent-green);
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.ble-ota-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2px;
+}
+
+.ble-toggle-btn {
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.ble-toggle-btn:hover {
+    background: var(--border);
+}
+
 .hidden { display: none; }
 
 /* ── Sim Controls ────────────────────────────────── */
@@ -430,3 +596,39 @@ output {
     background: var(--border);
     border-radius: 3px;
 }
+
+/* ── Leaflet Tactical Dark Overrides ──────────────── */
+
+.leaflet-control-layers {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 0.75rem !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.leaflet-control-layers-expanded {
+    padding: 8px 12px !important;
+}
+
+.leaflet-control-layers label {
+    color: var(--text-primary) !important;
+    font-family: var(--font-sans) !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.leaflet-bar a {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+.leaflet-bar a:hover {
+    background-color: var(--bg-panel) !important;
+}
+

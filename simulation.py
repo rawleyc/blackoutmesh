@@ -91,6 +91,12 @@ class Params:
     trickle_imax_s: float = 16.0
     trickle_k: int = 3
 
+    # Two-Stage Beacon-plus-GATT exchange model
+    use_compact_codebook: bool = True
+    max_gatt_concurrent_conns: int = 4
+    gatt_base_success: float = 0.92      # Single-MTU compact transfer (94B)
+    gatt_legacy_success: float = 0.70    # Multi-fragment transfer (>200B free-text)
+
 
 BASE = Params()
 
@@ -247,13 +253,48 @@ def ble_opportunity_probability(rx: RadioProfile, p: Params) -> float:
     return duty * p.base_adv_success
 
 
-def packet_delivery_probability(
+def beacon_discovery_probability(
     tx: RadioProfile, rx: RadioProfile, distance_m: float, p: Params
 ) -> float:
+    """Stage 1: Legacy BLE 31-byte beacon advertisement sensing."""
     if distance_m > p.radio_range_m:
         return 0.0
     rx_power = received_power_dbm(tx, distance_m, p)
     return reception_probability(rx_power, rx, p) * ble_opportunity_probability(rx, p)
+
+
+def gatt_exchange_probability(
+    distance_m: float, concurrent_attempts: int, p: Params
+) -> float:
+    """Stage 2: GATT connection setup and payload attribute read.
+
+    Models:
+    - Concurrency limit: Mobile BLE chips support ~3-7 concurrent connections.
+      If multiple centrals connect simultaneously to one peripheral, contention occurs.
+    - Packet Size efficiency: Compact Codebook packets (~94 bytes) transfer in a single
+      ATT MTU window, achieving ~92% reliability. Legacy multi-chunk (>200B) packets
+      suffer connection aborts during pedestrian movement (~70%).
+    - Edge dwell dropoff: nodes near radio perimeter have higher disconnection rates.
+    """
+    base = p.gatt_base_success if p.use_compact_codebook else p.gatt_legacy_success
+
+    if concurrent_attempts > p.max_gatt_concurrent_conns:
+        concurrency_factor = max(0.2, (p.max_gatt_concurrent_conns / concurrent_attempts))
+    else:
+        concurrency_factor = 1.0
+
+    dist_ratio = distance_m / max(p.radio_range_m, 1.0)
+    boundary_factor = 1.0 if dist_ratio < 0.8 else max(0.4, 1.0 - (dist_ratio - 0.8) * 3.0)
+
+    return base * concurrency_factor * boundary_factor
+
+
+def packet_delivery_probability(
+    tx: RadioProfile, rx: RadioProfile, distance_m: float, p: Params
+) -> float:
+    p_beacon = beacon_discovery_probability(tx, rx, distance_m, p)
+    p_gatt = gatt_exchange_probability(distance_m, 1, p)
+    return p_beacon * p_gatt
 
 
 # ============================================================
@@ -608,11 +649,20 @@ def run_simulation(world: World, p: Params, seed: int, verbose: bool = False) ->
             tx_this_step += 1
             pkt = tx.received_alerts[msg_id]
 
-            # One advert, independent reception chance at every neighbour
+            # Stage 1: Legacy BLE 31-byte Beacon sensing at in-range neighbors
+            beacon_discovered = []
             for j, d in neighbors[i]:
                 rx = nodes[j]
-                prob = packet_delivery_probability(tx.radio, rx.radio, d, p)
-                if random.random() < prob:
+                p_beacon = beacon_discovery_probability(tx.radio, rx.radio, d, p)
+                if random.random() < p_beacon:
+                    beacon_discovered.append((rx, d))
+
+            # Stage 2: GATT Connection and single/multi-MTU packet exchange
+            # Concurrency contention: multiple centrals connecting to tx peripheral at same second
+            num_attempts = len(beacon_discovered)
+            for rx, d in beacon_discovered:
+                p_gatt = gatt_exchange_probability(d, num_attempts, p)
+                if random.random() < p_gatt:
                     pending.append((tx, rx, pkt))
 
         # D. Apply receptions at end of step (no same-step chain propagation)

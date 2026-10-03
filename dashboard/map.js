@@ -10,34 +10,78 @@
 const MeshMap = (() => {
     let map = null;
     let nodeLayer = null;
+    let cartoLayer = null;
+    let esriDarkLayer = null;
+    let osmLayer = null;
+    let currentApiKey = '';
 
     // Kraków TAURON Arena vicinity
     const CENTER = [50.0647, 19.9650];
     const ZOOM = 15;
 
-    function init(containerId) {
+    function getCartoUrl(apiKey) {
+        if (apiKey) {
+            // CARTO Basemaps uses ?key= (not ?api_key=)
+            return `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(apiKey)}`;
+        }
+        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    }
+
+    function init(containerId, apiKey = '') {
+        currentApiKey = apiKey;
         map = L.map(containerId, {
             zoomControl: false,
             attributionControl: false,
         }).setView(CENTER, ZOOM);
 
-        // Dark tile layer
-        L.tileLayer(
-            'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        // 1. Tactical Dark Canvas (Unwatermarked, high-contrast dark theme)
+        esriDarkLayer = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
             {
                 maxZoom: 19,
-                subdomains: 'abcd',
+                attribution: '© Esri, HERE, Garmin | BlackoutMesh',
             }
-        ).addTo(map);
+        );
 
+        // 2. CARTO Dark Matter (uses ?key= with Basemap API key)
+        cartoLayer = L.tileLayer(getCartoUrl(currentApiKey), {
+            maxZoom: 19,
+            subdomains: 'abcd',
+            attribution: '© CARTO | © OpenStreetMap',
+        });
+
+        // 3. OpenStreetMap Standard
+        osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors',
+        });
+
+        // Default to clean Tactical Dark Canvas
+        esriDarkLayer.addTo(map);
+
+        const baseMaps = {
+            "Tactical Dark (Clean)": esriDarkLayer,
+            "CARTO Dark Matter": cartoLayer,
+            "OpenStreetMap": osmLayer,
+        };
+
+        L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
         L.control.zoom({ position: 'topright' }).addTo(map);
         L.control.attribution({ position: 'bottomright', prefix: false })
-            .addAttribution('© OpenStreetMap | BlackoutMesh')
+            .addAttribution('BlackoutMesh Tactical Console')
             .addTo(map);
 
         nodeLayer = L.layerGroup().addTo(map);
 
         return map;
+    }
+
+    function setApiKey(apiKey) {
+        if (!apiKey || apiKey === currentApiKey) return;
+        currentApiKey = apiKey;
+        if (cartoLayer) {
+            cartoLayer.setUrl(getCartoUrl(currentApiKey));
+        }
     }
 
     function updateNodes(positions, types) {
@@ -83,5 +127,5 @@ const MeshMap = (() => {
         }
     }
 
-    return { init, updateNodes };
+    return { init, updateNodes, setApiKey };
 })();

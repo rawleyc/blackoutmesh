@@ -1,1 +1,7 @@
 .venv/*
+.env
+authority.key
+__pycache__/
+*.pyc
+./android/.gradle/*
+./android/app/.gradle/*

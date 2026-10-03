@@ -84,35 +84,83 @@
                 <canvas id="chart-forwarding"></canvas>
             </div>
 
-            <!-- Dispatcher Console (WP 3.4) -->
+            <!-- Dispatcher Console (WP 1.1 / 3.4) -->
             <div class="panel" id="dispatch-panel">
-                <h3>🚨 Alert Dispatcher</h3>
+                <div class="panel-header-sub">
+                    <h3>🚨 Authority HSM Dispatcher</h3>
+                    <span class="badge-compact" id="badge-wire-budget">Compact Wire (~94 B)</span>
+                </div>
                 <form id="dispatch-form">
-                    <label for="dispatch-type">Alert Type</label>
-                    <select id="dispatch-type">
-                        <option value="CIVIL_DEFENSE_EVAC">Evacuation Order</option>
-                        <option value="CHEMICAL_SPILL">Chemical Spill</option>
-                        <option value="FLOOD_WARNING">Flood Warning</option>
-                        <option value="AIR_RAID">Air Raid Alert</option>
-                        <option value="INFRASTRUCTURE_FAILURE">Infrastructure Failure</option>
+                    <label for="dispatch-template">Codebook Template</label>
+                    <select id="dispatch-template">
+                        <option value="101" selected>TID 101 — Evacuation Order (Kraków Municipal)</option>
+                        <option value="102">TID 102 — Air Raid Warning (Alarm Przeciwlotniczy)</option>
+                        <option value="103">TID 103 — Power Grid Failure & Water Station</option>
+                        <option value="104">TID 104 — All Clear / Safe Return</option>
+                        <option value="999">TID 999 — Critical Escape Hatch (Max 60 chars)</option>
                     </select>
 
-                    <label for="dispatch-body">Message</label>
-                    <textarea id="dispatch-body" rows="3"
-                              placeholder="Grid failure. Water station active at TAURON Arena Gate 3."></textarea>
+                    <label for="dispatch-shelter">Target Evacuation / Shelter Site</label>
+                    <select id="dispatch-shelter">
+                        <option value="KRK_TAURON_G3" selected>TAURON Arena — Gate 3 (Water & Aid)</option>
+                        <option value="KRK_DWORZEC_GL">Dworzec Główny — Underground Tunnel</option>
+                        <option value="KRK_RYNEK_PODZ">Rynek Główny — Underground Bunker</option>
+                        <option value="KRK_NOWA_HUTA_CAHTS">Nowa Huta — CAHTS Shelter</option>
+                    </select>
 
-                    <label for="dispatch-ttl">TTL (hops)</label>
-                    <input type="range" id="dispatch-ttl" min="1" max="15" value="15">
-                    <output id="dispatch-ttl-value">15</output>
+                    <div id="custom-text-group" class="hidden">
+                        <label for="dispatch-custom-text">Escape Hatch Message (Max 60 chars)</label>
+                        <input type="text" id="dispatch-custom-text" maxlength="60"
+                               placeholder="Toxic plume moving east. Shelter in place.">
+                    </div>
 
-                    <label for="dispatch-validity">Validity (seconds)</label>
-                    <input type="number" id="dispatch-validity" value="3600" min="60" max="86400">
+                    <div class="control-row-inline">
+                        <div>
+                            <label for="dispatch-seq">Seq (Update #)</label>
+                            <input type="number" id="dispatch-seq" value="0" min="0" max="255">
+                        </div>
+                        <div>
+                            <label for="dispatch-duration">Duration (min)</label>
+                            <input type="number" id="dispatch-duration" value="120" min="15" max="1440">
+                        </div>
+                        <div>
+                            <label for="dispatch-ttl">TTL</label>
+                            <input type="number" id="dispatch-ttl" value="15" min="1" max="15">
+                        </div>
+                    </div>
+
+                    <!-- Live Trilingual Preview -->
+                    <div class="preview-box">
+                        <div class="preview-lang-tabs">
+                            <span class="preview-tab active" data-lang="pl">🇵🇱 PL</span>
+                            <span class="preview-tab" data-lang="en">🇬🇧 EN</span>
+                            <span class="preview-tab" data-lang="ua">🇺🇦 UA</span>
+                        </div>
+                        <div id="preview-text" class="preview-content">
+                            Ładowanie szablonu…
+                        </div>
+                    </div>
 
                     <button type="submit" id="dispatch-btn">
-                        <span>Sign & Broadcast</span>
+                        <span>Sign & Broadcast (Ed25519)</span>
                     </button>
                 </form>
                 <pre id="dispatch-result" class="hidden"></pre>
+
+                <!-- Official Laptop BLE Transmitter Status -->
+                <div class="ble-ota-card" id="ble-ota-card">
+                    <div class="ble-ota-header">
+                        <span class="ble-ota-indicator" id="ble-ota-dot"></span>
+                        <strong id="ble-ota-title">Laptop Official BLE Transmitter</strong>
+                    </div>
+                    <div class="ble-ota-info">
+                        <span id="ble-ota-status">Scanning Windows BLE…</span>
+                        <span class="ble-served-badge" id="ble-served-badge">0 devices served</span>
+                    </div>
+                    <div class="ble-ota-controls">
+                        <button type="button" id="ble-toggle-btn" class="ble-toggle-btn">Start BLE Broadcast</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Simulation Controls -->

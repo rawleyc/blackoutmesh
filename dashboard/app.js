@@ -10,15 +10,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     Telemetry.init();
     Dispatcher.init();
 
-    // Load authority key
+    // Load authority key & runtime config
     try {
         const authRes = await fetch('/api/authority');
         const authData = await authRes.json();
         const display = document.getElementById('pubkey-display');
-        display.textContent = authData.pubkey_hex.substring(0, 16) + '…';
-        display.title = authData.pubkey_hex;
+        if (display && authData.pubkey_hex) {
+            display.textContent = authData.pubkey_hex.substring(0, 16) + '…';
+            display.title = authData.pubkey_hex;
+        }
+        if (authData.carto_api_key) {
+            MeshMap.setApiKey(authData.carto_api_key);
+        }
     } catch (e) {
-        console.warn('Could not fetch authority key:', e);
+        console.warn('Could not fetch authority key or config:', e);
     }
 
     // Simulation button

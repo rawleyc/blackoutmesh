@@ -1,0 +1,77 @@
+{
+  "codebook_version": 1,
+  "issued_at": 1791000000,
+  "authority_id": "PL-KRK-MUWK",
+  "authority_name": "Małopolski Urząd Wojewódzki w Krakowie",
+  "templates": {
+    "101": {
+      "category": "EVACUATION",
+      "severity": "CRITICAL",
+      "pl": "NAKAZ EWAKUACJI. Udaj się natychmiast do punktu: {location}. Zachowaj spokój.",
+      "en": "EVACUATION ORDER. Proceed immediately to: {location}. Remain calm.",
+      "ua": "НАКАЗ ПРО ЕВАКУАЦІЮ. Негайно прямуйте до: {location}. Зберігайте спокій."
+    },
+    "102": {
+      "category": "AIR_RAID",
+      "severity": "CRITICAL",
+      "pl": "ALARM PRZECIWLOTNICZY dla rejonu: {location}. Ukryj się w najbliższym schronie.",
+      "en": "AIR RAID WARNING for area: {location}. Take shelter immediately.",
+      "ua": "ПОВІТРЯНА ТРИВОГА для району: {location}. Негайно прямуйте в укриття."
+    },
+    "103": {
+      "category": "INFRASTRUCTURE",
+      "severity": "HIGH",
+      "pl": "AWARIA SIECI ENERGETYCZNEJ. Punkt dystrybucji wody i pomocy medycznej: {location}.",
+      "en": "POWER GRID COLLAPSE. Water distribution and medical aid at: {location}.",
+      "ua": "АВАРІЯ ЕЛЕКТРОМЕРЕЖІ. Пункт роздачі води та медичної допомоги: {location}."
+    },
+    "104": {
+      "category": "ALL_CLEAR",
+      "severity": "INFO",
+      "pl": "ODWOŁANIE ALARMU dla punktu: {location}. Zagrożenie minęło.",
+      "en": "ALL CLEAR for location: {location}. The immediate danger has passed.",
+      "ua": "ВІДБІЙ ТРИВОГИ для: {location}. Небезпека минула."
+    },
+    "999": {
+      "category": "CUSTOM_ESC",
+      "severity": "CRITICAL",
+      "pl": "KOMUNIKAT SPECJALNY: {custom_text}",
+      "en": "SPECIAL BULLETIN: {custom_text}",
+      "ua": "СПЕЦІАЛЬНЕ ПОВІДОМЛЕННЯ: {custom_text}"
+    }
+  },
+  "shelters": {
+    "KRK_TAURON_G3": {
+      "name_pl": "TAURON Arena — Brama 3",
+      "name_en": "TAURON Arena — Gate 3",
+      "name_ua": "ТАУРОН Арена — Вхід 3",
+      "lat": 50.0652,
+      "lon": 19.9855,
+      "type": "WATER_AND_MEDICAL"
+    },
+    "KRK_DWORZEC_GL": {
+      "name_pl": "Dworzec Główny — Tunel Podziemny",
+      "name_en": "Kraków Main Station — Underground Tunnel",
+      "name_ua": "Головний вокзал — Підземний перехід",
+      "lat": 50.0660,
+      "lon": 19.9482,
+      "type": "CIVIL_SHELTER"
+    },
+    "KRK_RYNEK_PODZ": {
+      "name_pl": "Rynek Główny — Podziemia Rynku",
+      "name_en": "Main Market Square — Underground Shelter",
+      "name_ua": "Головний Ринок — Підземелля Ринку",
+      "lat": 50.0619,
+      "lon": 19.9373,
+      "type": "CIVIL_SHELTER"
+    },
+    "KRK_NOWA_HUTA_CAHTS": {
+      "name_pl": "Nowa Huta — Schron CAHTS Plac Centralny",
+      "name_en": "Nowa Huta — CAHTS Shelter Central Square",
+      "name_ua": "Нова Гута — Укриття CAHTS Центральна Площа",
+      "lat": 50.0722,
+      "lon": 20.0375,
+      "type": "FORTIFIED_BUNKER"
+    }
+  }
+}
