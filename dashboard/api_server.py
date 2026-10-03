@@ -197,6 +197,8 @@ async def dispatch_alert(req: CompactDispatchRequest):
             t_id = tpl_map.get(req.template_id, 1)
             p_id = loc_map.get(str(req.loc_ref), 2)
 
+            _ble_broadcaster.served_devices.clear()
+            _ble_broadcaster.total_reads = 0
             _ble_broadcaster.update_alert(
                 template=t_id, param=p_id, valid_minutes=req.duration_minutes
             )
@@ -222,6 +224,7 @@ async def get_ble_status():
         "available": True,
         "is_broadcasting": _ble_broadcaster.is_broadcasting,
         "served_count": _ble_broadcaster.served_count,
+        "total_reads": _ble_broadcaster.total_reads,
         "pubkey_hex": _ble_broadcaster.pub_key_hex,
         "service_uuid": "6e0b1a10-7b1d-4a52-9c1e-5a6f0a1d0001",
         "char_uuid": "6e0b1a10-7b1d-4a52-9c1e-5a6f0a1d0002",
@@ -246,9 +249,19 @@ async def toggle_ble():
             "success": True,
             "is_broadcasting": _ble_broadcaster.is_broadcasting,
             "served_count": _ble_broadcaster.served_count,
+            "total_reads": _ble_broadcaster.total_reads,
         }
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/ble/reset_count")
+async def reset_ble_count():
+    """Reset the served devices counter."""
+    if _ble_broadcaster:
+        _ble_broadcaster.served_devices.clear()
+        _ble_broadcaster.total_reads = 0
+    return {"success": True, "served_count": 0}
 
 
 @app.post("/api/simulate")

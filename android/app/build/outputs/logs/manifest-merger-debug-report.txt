@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-35:12
-INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-35:12
-INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-35:12
-INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-35:12
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-55:12
+INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-55:12
+INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-55:12
+INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:2:1-55:12
 MERGED from [androidx.compose.material3:material3-android:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\b49858615bb5bbd630076d9b0b5a6740\transformed\material3-release\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.compose.material:material-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\37a81c41aefef96ea7bd66010bdfba9a\transformed\material-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-ripple-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\2df481fc0244986c4b03f2e43605236c\transformed\material-ripple-release\AndroidManifest.xml:2:1-7:12
@@ -96,9 +96,29 @@ uses-permission#android.permission.BLUETOOTH_CONNECT
 ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:15:5-76
 	android:name
 		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:15:22-73
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:18:5-77
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:18:22-74
+uses-permission#android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:19:5-94
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:19:22-91
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:20:5-77
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:20:22-74
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:21:5-81
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:21:22-78
+uses-permission#android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:22:5-95
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:22:22-92
 application
-ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:17:5-33:19
-INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:17:5-33:19
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:24:5-53:19
+INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:24:5-53:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\c32d8ed3424d56f1f2d821612ad853a2\transformed\ui-test-manifest-1.7.3\AndroidManifest.xml:22:5-26:19
@@ -120,35 +140,55 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\chiru\.gradle\cach
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:22:9-35
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:29:9-35
 	android:label
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:20:9-41
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:27:9-41
 	android:roundIcon
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:21:9-62
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:28:9-62
 	android:icon
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:19:9-57
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:26:9-57
 	android:allowBackup
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:18:9-35
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:25:9-35
 	android:theme
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:23:9-50
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:30:9-50
 activity#com.example.blackoutmesh.MainActivity
-ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:24:9-32:20
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:31:9-39:20
 	android:exported
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:26:13-36
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:33:13-36
 	android:theme
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:27:13-54
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:34:13-54
 	android:name
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:25:13-41
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:32:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:28:13-31:29
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:35:13-38:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:29:17-69
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:36:17-69
 	android:name
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:29:25-66
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:36:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:30:17-77
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:37:17-77
 	android:name
-		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:30:27-74
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:37:27-74
+service#com.example.blackoutmesh.MeshService
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:41:9-44:63
+	android:exported
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:43:13-37
+	android:foregroundServiceType
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:44:13-60
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:42:13-40
+receiver#com.example.blackoutmesh.BootReceiver
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:46:9-52:20
+	android:exported
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:48:13-36
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:47:13-41
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:49:13-51:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:50:17-79
+	android:name
+		ADDED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:50:25-76
 uses-sdk
 INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml

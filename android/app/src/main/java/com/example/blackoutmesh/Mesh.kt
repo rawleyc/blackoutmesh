@@ -9,9 +9,10 @@ import android.os.Looper
 import android.os.ParcelUuid
 import android.os.SystemClock
 
-@SuppressLint("MissingPermission") // MainActivity asks for permissions before calling anything here
+@SuppressLint("MissingPermission") // The service only starts after permissions are granted
 class Mesh(
     private val context: Context,
+    private val store: AlertStore,
     private val onLog: (String) -> Unit,
     private val onAlert: (Alert?) -> Unit
 ) {
@@ -23,6 +24,7 @@ class Mesh(
     @Volatile private var busy = false
     private var running = false
     private var advertising = false
+    private var ticks = 0
     private var gattServer: BluetoothGattServer? = null
     private var activeGatt: BluetoothGatt? = null
     private val lastAttempt = mutableMapOf<String, Long>()
@@ -34,13 +36,16 @@ class Mesh(
     fun start() {
         val ad = adapter
         if (ad == null || !ad.isEnabled) {
-            log("Bluetooth is off or unavailable. Turn it on and try again.")
+            log("Bluetooth is off or unavailable. Will resume when it turns on.")
             return
         }
         if (running) return
         running = true
         openGattServer()
         startScan()
+        restoreSavedAlert()
+        handler.removeCallbacks(expiryTick)
+        handler.postDelayed(expiryTick, 60_000)
         log("Mesh started: listening for alerts")
     }
 
@@ -51,7 +56,7 @@ class Mesh(
         stopAdvertising()
         gattServer?.close()
         gattServer = null
-        handler.removeCallbacks(expiry)
+        handler.removeCallbacks(expiryTick)
         handler.removeCallbacks(timeout)
         activeGatt?.close()
         activeGatt = null
@@ -70,8 +75,19 @@ class Mesh(
         accept(raw, "seeded")
     }
 
+    /** Clear active alert to test receiving fresh updates. */
+    fun clearCurrentAlert() {
+        current = null
+        store.clear()
+        stopAdvertising()
+        onAlert(null)
+        lastAttempt.clear()
+        busy = false
+        log("Active alert cleared. Ready for fresh broadcast.")
+    }
+
     // ------------------------------------------------------------------
-    // Accepting an alert (from the seed button or from a fetch)
+    // Accepting, restoring and expiring alerts
     // ------------------------------------------------------------------
 
     private fun accept(raw: ByteArray, source: String) {
@@ -82,38 +98,55 @@ class Mesh(
                 return@post
             }
             val cur = current
-            if (cur != null && alert.msgId == cur.msgId && alert.template == cur.template && alert.param == cur.param) {
+            if (cur != null && alert.msgId == cur.msgId && alert.template == cur.template && alert.param == cur.param && alert.issuedAt <= cur.issuedAt) {
                 return@post
             }
             current = alert
-            log("ACCEPTED alert (T${alert.template}/P${alert.param}) from $source")
+            store.save(alert.raw)
+            log("ACCEPTED alert ${alert.msgId} (T${alert.template}/P${alert.param}) from $source")
             onAlert(alert)
             startAdvertising()
-            scheduleExpiry(alert)
         }
     }
 
-    /** Clear active alert to test receiving fresh updates. */
-    fun clearCurrentAlert() {
-        current = null
-        stopAdvertising()
-        onAlert(null)
-        lastAttempt.clear()
-        busy = false
-        log("Active alert cleared. Ready for fresh broadcast.")
+    // Pick up where we left off after restart. Re-verified so tampering/expiry is caught.
+    private fun restoreSavedAlert() {
+        val raw = store.load() ?: return
+        val alert = AlertCodec.verifyAndParse(raw)
+        if (alert == null) {
+            store.clear()
+            return
+        }
+        current = alert
+        onAlert(alert)
+        startAdvertising()
+        log("Restored saved alert ${alert.msgId}")
     }
 
-    private val expiry = Runnable {
+    // Real-clock expiry (timers pause in deep sleep, so we also check on every event)
+    private fun alertExpired(a: Alert): Boolean =
+        System.currentTimeMillis() / 1000 > a.issuedAt + a.validMinutes * 60L
+
+    private fun expireIfNeeded() {
+        val a = current ?: return
+        if (!alertExpired(a)) return
         current = null
+        store.clear()
         stopAdvertising()
         onAlert(null)
         log("Alert expired, stopped forwarding")
     }
 
-    private fun scheduleExpiry(a: Alert) {
-        handler.removeCallbacks(expiry)
-        val ms = (a.issuedAt + a.validMinutes * 60L) * 1000 - System.currentTimeMillis()
-        handler.postDelayed(expiry, ms.coerceAtLeast(0))
+    // Once a minute: expiry check, scan restart every 10 min, heartbeat every 15 min
+    private val expiryTick = object : Runnable {
+        override fun run() {
+            if (!running) return
+            expireIfNeeded()
+            ticks++
+            if (ticks % 10 == 0) restartScan()
+            if (ticks % 15 == 0) log("Heartbeat: scanning, alert=${current?.msgId ?: "none"}")
+            handler.postDelayed(this, 60_000)
+        }
     }
 
     // ------------------------------------------------------------------
@@ -142,9 +175,11 @@ class Mesh(
             offset: Int,
             characteristic: BluetoothGattCharacteristic
         ) {
-            val raw = current?.raw
+            // Never serve an expired alert
+            val raw = current?.takeIf { !alertExpired(it) }?.raw
             if (raw == null || offset > raw.size) {
                 gattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE, 0, null)
+                handler.post { expireIfNeeded() }
                 return
             }
             val slice = raw.copyOfRange(offset, raw.size)
@@ -177,7 +212,7 @@ class Mesh(
             return
         }
         val settings = AdvertiseSettings.Builder()
-            .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+            .setAdvertiseMode(Config.ADVERTISE_MODE)
             .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
             .setConnectable(true)
             .setTimeout(0)
@@ -196,12 +231,16 @@ class Mesh(
     }
 
     // ------------------------------------------------------------------
-    // ------------------------------------------------------------------
     // The listening: scanning for other phones' beacons & official laptop
     // ------------------------------------------------------------------
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
+            // Ignore non-connectable beacons (e.g. background manufacturer telemetry)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && !result.isConnectable) {
+                return
+            }
+
             val record = result.scanRecord
             val uuids = record?.serviceUuids
             val name = result.device.name ?: record?.deviceName
@@ -212,32 +251,36 @@ class Mesh(
                                         (mfgData != null && mfgData.isNotEmpty())
 
             if (isPhoneMesh || isOfficialBroadcaster) {
+                expireIfNeeded()
                 maybeFetch(result.device, result.rssi)
             }
         }
 
         override fun onScanFailed(errorCode: Int) {
-            log("BLE Scan failed! Error code: $errorCode")
+            log("Scan failed, code $errorCode")
         }
     }
 
     private fun startScan() {
-        val scanner = adapter?.bluetoothLeScanner
-        if (scanner == null) {
-            log("ERROR: Bluetooth LE scanner is null. Ensure Bluetooth is ON.")
-            return
-        }
+        val scanner = adapter?.bluetoothLeScanner ?: return
         val settings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+            .setScanMode(Config.SCAN_MODE)
             .setReportDelay(0)
             .build()
-
         scanner.startScan(null, settings, scanCallback)
-        log("Mesh started: actively scanning for emergency alerts")
     }
 
     private fun stopScan() {
-        adapter?.bluetoothLeScanner?.stopScan(scanCallback)
+        try {
+            adapter?.bluetoothLeScanner?.stopScan(scanCallback)
+        } catch (_: Exception) {}
+    }
+
+    private fun restartScan() {
+        if (!busy) {
+            stopScan()
+            startScan()
+        }
     }
 
     // ------------------------------------------------------------------
@@ -248,11 +291,17 @@ class Mesh(
         if (busy) return
         val now = SystemClock.elapsedRealtime()
         val last = lastAttempt[device.address] ?: 0L
-        if (now - last < 8_000L) return // 8 second cooldown between attempts to same device
+        val cooldown = if (current != null) Config.REFETCH_COOLDOWN_MS else 4_000L
+        if (now - last < cooldown) return
 
         lastAttempt[device.address] = now
         busy = true
-        val name = device.name ?: "Official Broadcaster"
+
+        // Crucial for Error 147: pause scanning while connecting so the radio
+        // does not collide frequency-hopping with LE connection parameter establishment
+        stopScan()
+
+        val name = device.name ?: "Broadcaster"
         log("Broadcaster in range: $name (${device.address}, $rssi dBm). Connecting...")
         handler.postDelayed(timeout, Config.FETCH_TIMEOUT_MS)
         activeGatt = device.connectGatt(
@@ -262,15 +311,28 @@ class Mesh(
 
     private val timeout = Runnable {
         log("Fetch timed out")
-        endFetch()
+        endFetch(activeGatt)
     }
 
-    private fun endFetch() {
+    private fun endFetch(gatt: BluetoothGatt? = null) {
         handler.post {
             handler.removeCallbacks(timeout)
-            activeGatt?.close()
+            try {
+                gatt?.disconnect()
+                gatt?.close()
+            } catch (_: Exception) {}
+            try {
+                if (activeGatt != null && activeGatt != gatt) {
+                    activeGatt?.disconnect()
+                    activeGatt?.close()
+                }
+            } catch (_: Exception) {}
             activeGatt = null
             busy = false
+            // Resume scanning after connection completes or fails
+            if (running) {
+                startScan()
+            }
         }
     }
 
@@ -281,17 +343,19 @@ class Mesh(
             if (newState == BluetoothProfile.STATE_CONNECTED && status == BluetoothGatt.GATT_SUCCESS) {
                 log("Connected to ${gatt.device.address}! Negotiating MTU...")
                 servicesDiscovered = false
-                val mtuOk = gatt.requestMtu(Config.MTU)
+                gatt.requestMtu(Config.MTU)
                 // Discover services fallback if onMtuChanged is delayed
                 handler.postDelayed({
                     if (activeGatt == gatt && !servicesDiscovered) {
                         log("Discovering GATT services...")
                         gatt.discoverServices()
                     }
-                }, 350)
+                }, 400)
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED || status != BluetoothGatt.GATT_SUCCESS) {
-                if (status != BluetoothGatt.GATT_SUCCESS) log("Connection lost, status $status")
-                endFetch()
+                if (status != BluetoothGatt.GATT_SUCCESS) {
+                    log("Connection problem, status $status")
+                }
+                endFetch(gatt)
             }
         }
 
@@ -308,18 +372,18 @@ class Mesh(
             log("Services discovered. Looking for BlackoutMesh alert slot...")
             val service = gatt.getService(Config.SERVICE_UUID)
             if (service == null) {
-                val svcs = gatt.services.map { it.uuid.toString().substring(0, 8) }
-                log("Alert service not found. Available services: $svcs")
-                endFetch()
+                val svcs = gatt.services.map { it.uuid.toString().take(8) }
+                log("Alert slot not found. Services: $svcs")
+                endFetch(gatt)
                 return
             }
             val characteristic = service.getCharacteristic(Config.ALERT_CHAR_UUID)
             if (characteristic == null) {
-                log("Alert characteristic not found in service")
-                endFetch()
+                log("Alert characteristic not found")
+                endFetch(gatt)
                 return
             }
-            log("Reading 79-byte signed emergency alert packet...")
+            log("Reading 79-byte emergency alert packet...")
             gatt.readCharacteristic(characteristic)
         }
 
@@ -330,7 +394,7 @@ class Mesh(
             value: ByteArray,
             status: Int
         ) {
-            handleRead(value, status)
+            handleRead(gatt, value, status)
         }
 
         // Android 12 calls this one
@@ -340,18 +404,18 @@ class Mesh(
             characteristic: BluetoothGattCharacteristic,
             status: Int
         ) {
-            handleRead(characteristic.value ?: ByteArray(0), status)
+            handleRead(gatt, characteristic.value ?: ByteArray(0), status)
         }
     }
 
-    private fun handleRead(value: ByteArray, status: Int) {
+    private fun handleRead(gatt: BluetoothGatt, value: ByteArray, status: Int) {
         if (status == BluetoothGatt.GATT_SUCCESS) {
             log("Received ${value.size} bytes from broadcaster! Verifying signature...")
             accept(value, "fetched")
         } else {
             log("Read failed, status $status")
         }
-        endFetch()
+        endFetch(gatt)
     }
 
     // ------------------------------------------------------------------

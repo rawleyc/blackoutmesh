@@ -46,133 +46,174 @@
 28-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:15:5-76
 28-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:15:22-73
 29
-30    <permission
-30-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
-31        android:name="com.example.blackoutmesh.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-31-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:23:9-81
-32        android:protectionLevel="signature" />
-32-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:24:9-44
-33
-34    <uses-permission android:name="com.example.blackoutmesh.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-34-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:26:5-97
-34-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
-35
-36    <application
-36-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:17:5-33:19
-37        android:allowBackup="true"
-37-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:18:9-35
-38        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-38-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
-39        android:debuggable="true"
-40        android:extractNativeLibs="false"
-41        android:icon="@android:drawable/ic_dialog_alert"
-41-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:19:9-57
-42        android:label="@string/app_name"
-42-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:20:9-41
-43        android:roundIcon="@android:drawable/ic_dialog_alert"
-43-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:21:9-62
-44        android:supportsRtl="true"
-44-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:22:9-35
-45        android:testOnly="true"
-46        android:theme="@style/Theme.BlackoutMesh" >
-46-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:23:9-50
-47        <activity
-47-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:24:9-32:20
-48            android:name="com.example.blackoutmesh.MainActivity"
-48-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:25:13-41
-49            android:exported="true"
-49-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:26:13-36
-50            android:theme="@style/Theme.BlackoutMesh" >
-50-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:27:13-54
-51            <intent-filter>
-51-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:28:13-31:29
-52                <action android:name="android.intent.action.MAIN" />
-52-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:29:17-69
-52-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:29:25-66
-53
-54                <category android:name="android.intent.category.LAUNCHER" />
-54-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:30:17-77
-54-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:30:27-74
-55            </intent-filter>
-56        </activity>
-57        <activity
-57-->[androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
-58            android:name="androidx.compose.ui.tooling.PreviewActivity"
-58-->[androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
-59            android:exported="true" />
-59-->[androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
-60        <activity
-60-->[androidx.compose.ui:ui-test-manifest:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\c32d8ed3424d56f1f2d821612ad853a2\transformed\ui-test-manifest-1.7.3\AndroidManifest.xml:23:9-25:39
-61            android:name="androidx.activity.ComponentActivity"
-61-->[androidx.compose.ui:ui-test-manifest:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\c32d8ed3424d56f1f2d821612ad853a2\transformed\ui-test-manifest-1.7.3\AndroidManifest.xml:24:13-63
-62            android:exported="true" />
-62-->[androidx.compose.ui:ui-test-manifest:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\c32d8ed3424d56f1f2d821612ad853a2\transformed\ui-test-manifest-1.7.3\AndroidManifest.xml:25:13-36
-63
-64        <provider
-64-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
-65            android:name="androidx.startup.InitializationProvider"
-65-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
-66            android:authorities="com.example.blackoutmesh.androidx-startup"
-66-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
-67            android:exported="false" >
-67-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
-68            <meta-data
-68-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
-69                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-69-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
-70                android:value="androidx.startup" />
-70-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
-71            <meta-data
-71-->[androidx.lifecycle:lifecycle-process:2.8.6] C:\Users\chiru\.gradle\caches\transforms-4\a8f4b1f12c23772c957b20a778e25fa3\transformed\lifecycle-process-2.8.6\AndroidManifest.xml:29:13-31:52
-72                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-72-->[androidx.lifecycle:lifecycle-process:2.8.6] C:\Users\chiru\.gradle\caches\transforms-4\a8f4b1f12c23772c957b20a778e25fa3\transformed\lifecycle-process-2.8.6\AndroidManifest.xml:30:17-78
-73                android:value="androidx.startup" />
-73-->[androidx.lifecycle:lifecycle-process:2.8.6] C:\Users\chiru\.gradle\caches\transforms-4\a8f4b1f12c23772c957b20a778e25fa3\transformed\lifecycle-process-2.8.6\AndroidManifest.xml:31:17-49
-74            <meta-data
-74-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
-75                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-75-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
-76                android:value="androidx.startup" />
-76-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
-77        </provider>
-78
-79        <receiver
-79-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
-80            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-80-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
-81            android:directBootAware="false"
-81-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
-82            android:enabled="true"
-82-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
-83            android:exported="true"
-83-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
-84            android:permission="android.permission.DUMP" >
-84-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
-85            <intent-filter>
-85-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
-86                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-86-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
-86-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
-87            </intent-filter>
-88            <intent-filter>
-88-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
-89                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-89-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
-89-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
-90            </intent-filter>
-91            <intent-filter>
-91-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
-92                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-92-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
-92-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
-93            </intent-filter>
-94            <intent-filter>
-94-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
-95                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
-95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
-96            </intent-filter>
-97        </receiver>
-98    </application>
+30    <!-- Always-on Foreground Service & resilience permissions -->
+31    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+31-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:18:5-77
+31-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:18:22-74
+32    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+32-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:19:5-94
+32-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:19:22-91
+33    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+33-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:20:5-77
+33-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:20:22-74
+34    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+34-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:21:5-81
+34-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:21:22-78
+35    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+35-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:22:5-95
+35-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:22:22-92
+36
+37    <permission
+37-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
+38        android:name="com.example.blackoutmesh.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+38-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:23:9-81
+39        android:protectionLevel="signature" />
+39-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:24:9-44
+40
+41    <uses-permission android:name="com.example.blackoutmesh.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+41-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:26:5-97
+41-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
+42
+43    <application
+43-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:24:5-53:19
+44        android:allowBackup="true"
+44-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:25:9-35
+45        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+45-->[androidx.core:core:1.13.1] C:\Users\chiru\.gradle\caches\transforms-4\1938adbed7f6eb7a8793af6578215887\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
+46        android:debuggable="true"
+47        android:extractNativeLibs="false"
+48        android:icon="@android:drawable/ic_dialog_alert"
+48-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:26:9-57
+49        android:label="@string/app_name"
+49-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:27:9-41
+50        android:roundIcon="@android:drawable/ic_dialog_alert"
+50-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:28:9-62
+51        android:supportsRtl="true"
+51-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:29:9-35
+52        android:testOnly="true"
+53        android:theme="@style/Theme.BlackoutMesh" >
+53-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:30:9-50
+54        <activity
+54-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:31:9-39:20
+55            android:name="com.example.blackoutmesh.MainActivity"
+55-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:32:13-41
+56            android:exported="true"
+56-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:33:13-36
+57            android:theme="@style/Theme.BlackoutMesh" >
+57-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:34:13-54
+58            <intent-filter>
+58-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:35:13-38:29
+59                <action android:name="android.intent.action.MAIN" />
+59-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:36:17-69
+59-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:36:25-66
+60
+61                <category android:name="android.intent.category.LAUNCHER" />
+61-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:37:17-77
+61-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:37:27-74
+62            </intent-filter>
+63        </activity>
+64
+65        <service
+65-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:41:9-44:63
+66            android:name="com.example.blackoutmesh.MeshService"
+66-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:42:13-40
+67            android:exported="false"
+67-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:43:13-37
+68            android:foregroundServiceType="connectedDevice" />
+68-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:44:13-60
+69
+70        <receiver
+70-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:46:9-52:20
+71            android:name="com.example.blackoutmesh.BootReceiver"
+71-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:47:13-41
+72            android:exported="true" >
+72-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:48:13-36
+73            <intent-filter>
+73-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:49:13-51:29
+74                <action android:name="android.intent.action.BOOT_COMPLETED" />
+74-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:50:17-79
+74-->C:\Users\chiru\OneDrive\Documents\HACKYEAH2026\BlackoutMesh\android\app\src\main\AndroidManifest.xml:50:25-76
+75            </intent-filter>
+76        </receiver>
+77
+78        <activity
+78-->[androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
+79            android:name="androidx.compose.ui.tooling.PreviewActivity"
+79-->[androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
+80            android:exported="true" />
+80-->[androidx.compose.ui:ui-tooling-android:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\126a45a6875a511f1d03ccd4f9ba4578\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
+81        <activity
+81-->[androidx.compose.ui:ui-test-manifest:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\c32d8ed3424d56f1f2d821612ad853a2\transformed\ui-test-manifest-1.7.3\AndroidManifest.xml:23:9-25:39
+82            android:name="androidx.activity.ComponentActivity"
+82-->[androidx.compose.ui:ui-test-manifest:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\c32d8ed3424d56f1f2d821612ad853a2\transformed\ui-test-manifest-1.7.3\AndroidManifest.xml:24:13-63
+83            android:exported="true" />
+83-->[androidx.compose.ui:ui-test-manifest:1.7.3] C:\Users\chiru\.gradle\caches\transforms-4\c32d8ed3424d56f1f2d821612ad853a2\transformed\ui-test-manifest-1.7.3\AndroidManifest.xml:25:13-36
+84
+85        <provider
+85-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+86            android:name="androidx.startup.InitializationProvider"
+86-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+87            android:authorities="com.example.blackoutmesh.androidx-startup"
+87-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+88            android:exported="false" >
+88-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+89            <meta-data
+89-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+90                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+90-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+91                android:value="androidx.startup" />
+91-->[androidx.emoji2:emoji2:1.3.0] C:\Users\chiru\.gradle\caches\transforms-4\cdef4f7cf2e5c0f072cde5a0c7f6a239\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+92            <meta-data
+92-->[androidx.lifecycle:lifecycle-process:2.8.6] C:\Users\chiru\.gradle\caches\transforms-4\a8f4b1f12c23772c957b20a778e25fa3\transformed\lifecycle-process-2.8.6\AndroidManifest.xml:29:13-31:52
+93                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+93-->[androidx.lifecycle:lifecycle-process:2.8.6] C:\Users\chiru\.gradle\caches\transforms-4\a8f4b1f12c23772c957b20a778e25fa3\transformed\lifecycle-process-2.8.6\AndroidManifest.xml:30:17-78
+94                android:value="androidx.startup" />
+94-->[androidx.lifecycle:lifecycle-process:2.8.6] C:\Users\chiru\.gradle\caches\transforms-4\a8f4b1f12c23772c957b20a778e25fa3\transformed\lifecycle-process-2.8.6\AndroidManifest.xml:31:17-49
+95            <meta-data
+95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+96                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+96-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+97                android:value="androidx.startup" />
+97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+98        </provider>
 99
-100</manifest>
+100        <receiver
+100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+101            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+101-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+102            android:directBootAware="false"
+102-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+103            android:enabled="true"
+103-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+104            android:exported="true"
+104-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+105            android:permission="android.permission.DUMP" >
+105-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+106            <intent-filter>
+106-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+107                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+107-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+107-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+108            </intent-filter>
+109            <intent-filter>
+109-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+110                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+110-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+110-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+111            </intent-filter>
+112            <intent-filter>
+112-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+113                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+113-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+113-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+114            </intent-filter>
+115            <intent-filter>
+115-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+116                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+116-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+116-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\chiru\.gradle\caches\transforms-4\209c616b272fb48760371d92ee728e1e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+117            </intent-filter>
+118        </receiver>
+119    </application>
+120
+121</manifest>

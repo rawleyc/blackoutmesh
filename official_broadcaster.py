@@ -78,8 +78,16 @@ class LaptopBleBroadcaster:
         self.adv_publisher: adv.BluetoothLEAdvertisementPublisher | None = None
         self.read_token: int | None = None
         self.is_broadcasting: bool = False
-        self.served_count: int = 0
+        self.served_devices: set[str] = set()
+        self.total_reads: int = 0
         self.loop: asyncio.AbstractEventLoop | None = None
+
+    @property
+    def served_count(self) -> int:
+        """Number of unique devices that have read the alert."""
+        if self.served_devices:
+            return len(self.served_devices)
+        return 1 if self.total_reads > 0 else 0
 
     async def initialize(self):
         """Create the GATT service and characteristic on the Windows Bluetooth controller."""
@@ -105,6 +113,14 @@ class LaptopBleBroadcaster:
         """Handle incoming GATT read from nearby phones."""
         deferral = args.get_deferral()
 
+        # Extract client device ID from session if available
+        device_id_str = None
+        try:
+            if hasattr(args, "session") and args.session and args.session.device_id:
+                device_id_str = str(args.session.device_id.id)
+        except Exception:
+            pass
+
         async def reply():
             try:
                 req = await args.get_request_async()
@@ -115,10 +131,16 @@ class LaptopBleBroadcaster:
                     slice_data = self.current_packet[offset:] if offset < len(self.current_packet) else b""
                     writer.write_bytes(slice_data)
                     req.respond_with_value(writer.detach_buffer())
-                    self.served_count += 1
+
+                    self.total_reads += 1
+                    # Only register unique device on initial packet read
+                    if offset == 0:
+                        dev_key = device_id_str or "primary_handset"
+                        self.served_devices.add(dev_key)
+
                     print(
-                        f"\n>>> [OVER-THE-AIR ALERT SERVED] Transferred {len(slice_data)} bytes to nearby phone! "
-                        f"(Total served: {self.served_count})"
+                        f"\n>>> [OVER-THE-AIR ALERT SERVED] Transferred {len(slice_data)} bytes to {device_id_str or 'handset'}! "
+                        f"(Unique devices: {self.served_count}, Total transfers: {self.total_reads})"
                     )
             except Exception as e:
                 print(f"[BLE ERROR] Failed serving read: {e}", file=sys.stderr)

@@ -189,7 +189,9 @@ const Dispatcher = (() => {
             }
 
             if (badgeEl) {
-                badgeEl.textContent = `${data.served_count || 0} device(s) served`;
+                const count = data.served_count || 0;
+                const reads = data.total_reads || 0;
+                badgeEl.textContent = `${count} phone(s) reached (${reads} transfers)`;
             }
         } catch (e) {
             // Server might still be booting or reloading

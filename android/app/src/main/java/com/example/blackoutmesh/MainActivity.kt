@@ -1,8 +1,10 @@
 package com.example.blackoutmesh
 
-import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
+import android.os.PowerManager
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,89 +22,84 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var mesh: Mesh
-    private val logs = mutableStateListOf<String>()
-    private var alertText by mutableStateOf<String?>(null)
     private var pendingAction: (() -> Unit)? = null
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { grants ->
-        if (grants.values.all { it }) {
+    ) {
+        if (Permissions.hasBluetooth(this)) {
             pendingAction?.invoke()
         } else {
-            logs.add(0, "Bluetooth permissions were denied. The app cannot work without them.")
+            MeshRepository.log("Bluetooth permissions were denied. The service cannot run without them.")
         }
         pendingAction = null
     }
 
-    private fun withBluetoothPermissions(action: () -> Unit) {
-        pendingAction = action
-        val perms = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            arrayOf(
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_ADVERTISE,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        } else {
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+    /** Runs the action once Bluetooth permissions are granted (asks if needed). */
+    private fun withPermissions(action: () -> Unit) {
+        if (Permissions.hasBluetooth(this)) {
+            action()
+            return
         }
+        pendingAction = action
+        permissionLauncher.launch(Permissions.required())
+    }
 
-        // Check if GPS/Location provider is active
-        try {
-            val lm = getSystemService(LOCATION_SERVICE) as? android.location.LocationManager
-            val isLocationOn = lm?.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) == true ||
-                               lm?.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER) == true
-            if (!isLocationOn) {
-                logs.add(0, "⚠️ Location (GPS) is OFF. Turn ON in Android quick settings so BLE discovery works!")
-            }
-        } catch (_: Exception) {}
+    private fun startMeshService(action: String? = null) {
+        AlertStore(this).setEnabled(true)
+        val intent = Intent(this, MeshService::class.java).setAction(action)
+        ContextCompat.startForegroundService(this, intent)
+    }
 
-        permissionLauncher.launch(perms)
+    private fun stopMeshService() {
+        AlertStore(this).setEnabled(false)
+        stopService(Intent(this, MeshService::class.java))
+    }
+
+    private fun requestBatteryExemption() {
+        val pm = getSystemService(PowerManager::class.java)
+        if (pm.isIgnoringBatteryOptimizations(packageName)) {
+            MeshRepository.log("Battery optimization is already off for this app")
+            return
+        }
+        startActivity(
+            Intent(
+                Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:$packageName")
+            )
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // MVP only works in the foreground, so keep the screen awake while testing
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        mesh = Mesh(
-            context = this,
-            onLog = { logs.add(0, it) },
-            onAlert = { alert -> alertText = alert?.let { Codebook.render(it) } }
-        )
-
         setContent {
             MaterialTheme { Screen() }
         }
     }
 
-    override fun onDestroy() {
-        mesh.stop()
-        super.onDestroy()
-    }
-
     @Composable
     private fun Screen() {
+        val logs by MeshRepository.logs.collectAsState()
+        val alertText by MeshRepository.alertText.collectAsState()
+        val running by MeshRepository.running.collectAsState()
+
         Column(
             modifier = Modifier.fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("BlackoutMesh MVP", style = MaterialTheme.typography.headlineSmall)
+            Text("⚡ BlackoutMesh", style = MaterialTheme.typography.headlineSmall)
+            Text(
+                if (running) "Service: RUNNING (Always-On)" else "Service: STOPPED",
+                style = MaterialTheme.typography.titleSmall
+            )
 
             Card(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -113,9 +110,16 @@ class MainActivity : ComponentActivity() {
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { withBluetoothPermissions { mesh.start() } }) { Text("Start") }
-                OutlinedButton(onClick = { mesh.clearCurrentAlert() }) { Text("Clear") }
-                OutlinedButton(onClick = { mesh.stop() }) { Text("Stop") }
+                Button(onClick = { withPermissions { startMeshService() } }) { Text("Start") }
+                Button(onClick = {
+                    withPermissions { startMeshService(MeshService.ACTION_SEED) }
+                }) { Text("Test alert") }
+                OutlinedButton(onClick = { startMeshService(MeshService.ACTION_CLEAR) }) { Text("Clear") }
+                OutlinedButton(onClick = { stopMeshService() }) { Text("Stop") }
+            }
+
+            OutlinedButton(onClick = { requestBatteryExemption() }) {
+                Text("Allow unrestricted battery")
             }
 
             LazyColumn {
