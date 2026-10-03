@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BlackoutMesh — Hardened DTN Emergency Alert System Dashboard">
+    <title>BlackoutMesh — Tactical Dashboard</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin="anonymous" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Top Bar -->
+    <header id="top-bar">
+        <div class="logo">
+            <span class="logo-icon">⚡</span>
+            <h1>BlackoutMesh</h1>
+            <span class="tag">DTN Tactical Console</span>
+        </div>
+        <div class="status-cluster">
+            <div class="status-pill" id="status-pill">
+                <span class="dot"></span>
+                <span class="label">STANDBY</span>
+            </div>
+            <div class="authority-key" id="authority-key" title="Authority Public Key">
+                <span class="key-icon">🔑</span>
+                <code id="pubkey-display">loading…</code>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main id="dashboard-grid">
+        <!-- LEFT: Map -->
+        <section id="map-panel" class="panel">
+            <div class="panel-header">
+                <h2>Kraków Mesh Coverage</h2>
+                <div class="legend">
+                    <span class="legend-item seed">● Seeds</span>
+                    <span class="legend-item reached">● Reached</span>
+                    <span class="legend-item unreached">● Unreached</span>
+                </div>
+            </div>
+            <div id="map-container"></div>
+        </section>
+
+        <!-- RIGHT: Telemetry + Dispatcher -->
+        <aside id="right-panel">
+            <!-- Metric Cards -->
+            <div id="metric-cards">
+                <div class="metric-card" id="mc-coverage">
+                    <div class="metric-value" id="mv-coverage">—</div>
+                    <div class="metric-label">Coverage</div>
+                </div>
+                <div class="metric-card" id="mc-broadcasts">
+                    <div class="metric-value" id="mv-broadcasts">—</div>
+                    <div class="metric-label">Broadcasts</div>
+                </div>
+                <div class="metric-card" id="mc-duplicates">
+                    <div class="metric-value" id="mv-duplicates">—</div>
+                    <div class="metric-label">Duplicates</div>
+                </div>
+                <div class="metric-card" id="mc-suppressed">
+                    <div class="metric-value" id="mv-suppressed">—</div>
+                    <div class="metric-label">Suppressed</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="panel chart-panel">
+                <h3>Coverage Over Time</h3>
+                <canvas id="chart-coverage"></canvas>
+            </div>
+            <div class="panel chart-panel">
+                <h3>Broadcasts & Redundancy</h3>
+                <canvas id="chart-forwarding"></canvas>
+            </div>
+
+            <!-- Dispatcher Console (WP 3.4) -->
+            <div class="panel" id="dispatch-panel">
+                <h3>🚨 Alert Dispatcher</h3>
+                <form id="dispatch-form">
+                    <label for="dispatch-type">Alert Type</label>
+                    <select id="dispatch-type">
+                        <option value="CIVIL_DEFENSE_EVAC">Evacuation Order</option>
+                        <option value="CHEMICAL_SPILL">Chemical Spill</option>
+                        <option value="FLOOD_WARNING">Flood Warning</option>
+                        <option value="AIR_RAID">Air Raid Alert</option>
+                        <option value="INFRASTRUCTURE_FAILURE">Infrastructure Failure</option>
+                    </select>
+
+                    <label for="dispatch-body">Message</label>
+                    <textarea id="dispatch-body" rows="3"
+                              placeholder="Grid failure. Water station active at TAURON Arena Gate 3."></textarea>
+
+                    <label for="dispatch-ttl">TTL (hops)</label>
+                    <input type="range" id="dispatch-ttl" min="1" max="15" value="15">
+                    <output id="dispatch-ttl-value">15</output>
+
+                    <label for="dispatch-validity">Validity (seconds)</label>
+                    <input type="number" id="dispatch-validity" value="3600" min="60" max="86400">
+
+                    <button type="submit" id="dispatch-btn">
+                        <span>Sign & Broadcast</span>
+                    </button>
+                </form>
+                <pre id="dispatch-result" class="hidden"></pre>
+            </div>
+
+            <!-- Simulation Controls -->
+            <div class="panel" id="sim-controls">
+                <h3>⚙ Simulation Controls</h3>
+                <div class="control-row">
+                    <label for="sim-civilians">Civilians</label>
+                    <input type="number" id="sim-civilians" value="75" min="10" max="2000">
+                </div>
+                <div class="control-row">
+                    <label for="sim-duration">Duration (s)</label>
+                    <input type="number" id="sim-duration" value="900" min="60" max="3600">
+                </div>
+                <div class="control-row">
+                    <label for="sim-range">Radio Range (m)</label>
+                    <input type="number" id="sim-range" value="50" min="10" max="200">
+                </div>
+                <button id="run-sim-btn">▶ Run Simulation</button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script src="/static/map.js"></script>
+    <script src="/static/telemetry.js"></script>
+    <script src="/static/dispatcher.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
