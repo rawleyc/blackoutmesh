@@ -7,6 +7,7 @@
     "101": {
       "category": "EVACUATION",
       "severity": "CRITICAL",
+      "needs_target": true,
       "pl": "NAKAZ EWAKUACJI. Udaj się natychmiast do punktu: {location}. Zachowaj spokój.",
       "en": "EVACUATION ORDER. Proceed immediately to: {location}. Remain calm.",
       "ua": "НАКАЗ ПРО ЕВАКУАЦІЮ. Негайно прямуйте до: {location}. Зберігайте спокій."
@@ -14,6 +15,7 @@
     "102": {
       "category": "AIR_RAID",
       "severity": "CRITICAL",
+      "needs_target": true,
       "pl": "ALARM PRZECIWLOTNICZY dla rejonu: {location}. Ukryj się w najbliższym schronie.",
       "en": "AIR RAID WARNING for area: {location}. Take shelter immediately.",
       "ua": "ПОВІТРЯНА ТРИВОГА для району: {location}. Негайно прямуйте в укриття."
@@ -21,6 +23,7 @@
     "103": {
       "category": "INFRASTRUCTURE",
       "severity": "HIGH",
+      "needs_target": true,
       "pl": "AWARIA SIECI ENERGETYCZNEJ. Punkt dystrybucji wody i pomocy medycznej: {location}.",
       "en": "POWER GRID COLLAPSE. Water distribution and medical aid at: {location}.",
       "ua": "АВАРІЯ ЕЛЕКТРОМЕРЕЖІ. Пункт роздачі води та медичної допомоги: {location}."
@@ -28,6 +31,7 @@
     "104": {
       "category": "ALL_CLEAR",
       "severity": "INFO",
+      "needs_target": true,
       "pl": "ODWOŁANIE ALARMU dla punktu: {location}. Zagrożenie minęło.",
       "en": "ALL CLEAR for location: {location}. The immediate danger has passed.",
       "ua": "ВІДБІЙ ТРИВОГИ для: {location}. Небезпека минула."
@@ -35,6 +39,8 @@
     "999": {
       "category": "CUSTOM_ESC",
       "severity": "CRITICAL",
+      "needs_target": false,
+      "needs_custom_text": true,
       "pl": "KOMUNIKAT SPECJALNY: {custom_text}",
       "en": "SPECIAL BULLETIN: {custom_text}",
       "ua": "СПЕЦІАЛЬНЕ ПОВІДОМЛЕННЯ: {custom_text}"

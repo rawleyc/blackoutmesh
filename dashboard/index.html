@@ -3,189 +3,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BlackoutMesh — Hardened DTN Emergency Alert System Dashboard">
-    <title>BlackoutMesh — Tactical Dashboard</title>
+    <meta name="description" content="BlackoutMesh — Hardened DTN Emergency Alert System Tactical Console">
+    <title>BlackoutMesh — Tactical Console</title>
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          crossorigin="anonymous" />
+    <!-- Leaflet CSS (Local offline bundle with fallback) -->
+    <link rel="stylesheet" href="/static/vendor/leaflet.css" />
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts with offline fallbacks -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <!-- Top Bar -->
+    <!-- Top Bar (WP 2.4) -->
     <header id="top-bar">
         <div class="logo">
             <span class="logo-icon">⚡</span>
             <h1>BlackoutMesh</h1>
             <span class="tag">DTN Tactical Console</span>
         </div>
-        <div class="status-cluster">
-            <div class="status-pill" id="status-pill">
+
+        <div class="header-status-group">
+            <!-- Header Status Badge (Section 4) -->
+            <div class="status-pill status-standby" id="status-pill" title="System Status (Click to inspect reasons)">
                 <span class="dot"></span>
-                <span class="label">STANDBY</span>
+                <span class="label" id="status-label">STANDBY</span>
+                <span class="subtext" id="status-subtext">Ready</span>
             </div>
-            <div class="authority-key" id="authority-key" title="Authority Public Key">
-                <span class="key-icon">🔑</span>
-                <code id="pubkey-display">loading…</code>
+
+            <!-- Key Info: label, shortened fingerprint, copy button -->
+            <div class="key-badge-container">
+                <span class="key-label" id="key-label-badge">[TEST KEY]</span>
+                <div class="authority-key" title="Authority Public Key Fingerprint">
+                    <span class="key-icon">🔑</span>
+                    <code id="pubkey-display">loading…</code>
+                    <button type="button" id="copy-key-btn" title="Copy Key Fingerprint" class="copy-btn">📋</button>
+                </div>
+            </div>
+
+            <!-- System UTC Clock -->
+            <div class="utc-clock" id="system-utc-clock">
+                <span class="clock-icon">🕒</span>
+                <span id="utc-time-display">System time: --:--:-- UTC</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Grid -->
-    <main id="dashboard-grid">
-        <!-- LEFT: Map -->
-        <section id="map-panel" class="panel">
-            <div class="panel-header">
-                <h2>Kraków Mesh Coverage</h2>
-                <div class="legend">
-                    <span class="legend-item seed">● Seeds</span>
-                    <span class="legend-item reached">● Reached</span>
-                    <span class="legend-item unreached">● Unreached</span>
-                </div>
-            </div>
-            <div id="map-container"></div>
-        </section>
+    <!-- Main Two-Column Layout (WP 2.0) -->
+    <main id="console-grid">
 
-        <!-- RIGHT: Telemetry + Dispatcher -->
-        <aside id="right-panel">
-            <!-- Metric Cards -->
-            <div id="metric-cards">
-                <div class="metric-card" id="mc-coverage">
-                    <div class="metric-value" id="mv-coverage">—</div>
-                    <div class="metric-label">Coverage</div>
-                </div>
-                <div class="metric-card" id="mc-broadcasts">
-                    <div class="metric-value" id="mv-broadcasts">—</div>
-                    <div class="metric-label">Broadcasts</div>
-                </div>
-                <div class="metric-card" id="mc-duplicates">
-                    <div class="metric-value" id="mv-duplicates">—</div>
-                    <div class="metric-label">Duplicates</div>
-                </div>
-                <div class="metric-card" id="mc-suppressed">
-                    <div class="metric-value" id="mv-suppressed">—</div>
-                    <div class="metric-label">Suppressed</div>
-                </div>
+        <!-- ══════════════════════════════════════════════════════════
+             COLUMN 1: LIVE OPERATIONS (Blue Header Strip)
+             ══════════════════════════════════════════════════════════ -->
+        <section id="live-operations-col" class="console-column">
+            <div class="column-header-strip live-strip">
+                <span class="strip-badge">LIVE</span>
+                <span class="strip-title">LIVE OPERATIONS</span>
             </div>
 
-            <!-- Charts -->
-            <div class="panel chart-panel">
-                <h3>Coverage Over Time</h3>
-                <canvas id="chart-coverage"></canvas>
-            </div>
-            <div class="panel chart-panel">
-                <h3>Broadcasts & Redundancy</h3>
-                <canvas id="chart-forwarding"></canvas>
-            </div>
-
-            <!-- Dispatcher Console (WP 1.1 / 3.4) -->
-            <div class="panel" id="dispatch-panel">
+            <!-- 1. Alert Dispatcher (WP 4.0, 7.5) -->
+            <div class="panel live-panel" id="dispatch-panel">
                 <div class="panel-header-sub">
-                    <h3>🚨 Authority HSM Dispatcher</h3>
-                    <span class="badge-compact" id="badge-wire-budget">Compact Wire (~94 B)</span>
+                    <div class="title-with-sub">
+                        <h3>Alert Dispatcher</h3>
+                        <div class="dispatcher-subline" id="dispatcher-subline">
+                            Signing key: <span id="disp-key-label">[TEST KEY]</span>, <code id="disp-key-fp">loading…</code>
+                        </div>
+                    </div>
+                    <span class="badge-compact" id="badge-wire-budget">Packet size: -- bytes (limit 240)</span>
                 </div>
-                <form id="dispatch-form">
-                    <label for="dispatch-template">Codebook Template</label>
-                    <select id="dispatch-template">
-                        <option value="101" selected>TID 101 — Evacuation Order (Kraków Municipal)</option>
-                        <option value="102">TID 102 — Air Raid Warning (Alarm Przeciwlotniczy)</option>
-                        <option value="103">TID 103 — Power Grid Failure & Water Station</option>
-                        <option value="104">TID 104 — All Clear / Safe Return</option>
-                        <option value="999">TID 999 — Critical Escape Hatch (Max 60 chars)</option>
-                    </select>
 
-                    <label for="dispatch-shelter">Target Evacuation / Shelter Site</label>
-                    <select id="dispatch-shelter">
-                        <option value="KRK_TAURON_G3" selected>TAURON Arena — Gate 3 (Water & Aid)</option>
-                        <option value="KRK_DWORZEC_GL">Dworzec Główny — Underground Tunnel</option>
-                        <option value="KRK_RYNEK_PODZ">Rynek Główny — Underground Bunker</option>
-                        <option value="KRK_NOWA_HUTA_CAHTS">Nowa Huta — CAHTS Shelter</option>
-                    </select>
+                <form id="dispatch-form" novalidate>
+                    <div class="form-group">
+                        <label for="dispatch-template">Codebook Template</label>
+                        <select id="dispatch-template">
+                            <option value="101" selected>TID 101 — Evacuation Order (Kraków Municipal)</option>
+                            <option value="102">TID 102 — Air Raid Warning (Alarm Przeciwlotniczy)</option>
+                            <option value="103">TID 103 — Power Grid Failure & Water Station</option>
+                            <option value="104">TID 104 — All Clear / Safe Return</option>
+                            <option value="999">TID 999 — Critical Escape Hatch (Max 60 bytes)</option>
+                        </select>
+                    </div>
 
-                    <div id="custom-text-group" class="hidden">
-                        <label for="dispatch-custom-text">Escape Hatch Message (Max 60 chars)</label>
-                        <input type="text" id="dispatch-custom-text" maxlength="60"
+                    <div class="form-group" id="shelter-group">
+                        <label for="dispatch-shelter">Target site</label>
+                        <select id="dispatch-shelter">
+                            <option value="KRK_TAURON_G3" selected>TAURON Arena — Gate 3 (Water & Aid)</option>
+                            <option value="KRK_DWORZEC_GL">Dworzec Główny — Underground Tunnel</option>
+                            <option value="KRK_RYNEK_PODZ">Rynek Główny — Underground Bunker</option>
+                            <option value="KRK_NOWA_HUTA_CAHTS">Nowa Huta — CAHTS Shelter</option>
+                        </select>
+                    </div>
+
+                    <div id="custom-text-group" class="form-group hidden">
+                        <div class="label-with-counter">
+                            <label for="dispatch-custom-text">Escape Hatch Message</label>
+                            <span class="byte-counter" id="free-text-byte-counter">60 bytes left</span>
+                        </div>
+                        <input type="text" id="dispatch-custom-text"
                                placeholder="Toxic plume moving east. Shelter in place.">
                     </div>
 
                     <div class="control-row-inline">
-                        <div>
-                            <label for="dispatch-seq">Seq (Update #)</label>
-                            <input type="number" id="dispatch-seq" value="0" min="0" max="255">
+                        <div class="form-group">
+                            <label for="dispatch-seq">Update number</label>
+                            <input type="number" id="dispatch-seq" value="1" min="1" max="255">
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="dispatch-duration">Duration (min)</label>
-                            <input type="number" id="dispatch-duration" value="120" min="15" max="1440">
+                            <input type="number" id="dispatch-duration" value="120" min="5" max="1440">
                         </div>
-                        <div>
-                            <label for="dispatch-ttl">TTL</label>
+                        <div class="form-group">
+                            <label for="dispatch-ttl">Max hops (TTL)</label>
                             <input type="number" id="dispatch-ttl" value="15" min="1" max="15">
                         </div>
                     </div>
 
-                    <!-- Live Trilingual Preview -->
-                    <div class="preview-box">
-                        <div class="preview-lang-tabs">
-                            <span class="preview-tab active" data-lang="pl">🇵🇱 PL</span>
-                            <span class="preview-tab" data-lang="en">🇬🇧 EN</span>
-                            <span class="preview-tab" data-lang="ua">🇺🇦 UA</span>
+                    <!-- WP 4.4: Preview in all languages (stacked blocks) -->
+                    <div class="stacked-preview-container">
+                        <div class="preview-header-label">Preview in all languages</div>
+                        <div class="preview-lang-block" id="preview-pl">
+                            <span class="lang-tag">🇵🇱 PL</span>
+                            <div class="lang-text" id="preview-pl-text">Ładowanie szablonu…</div>
                         </div>
-                        <div id="preview-text" class="preview-content">
-                            Ładowanie szablonu…
+                        <div class="preview-lang-block" id="preview-en">
+                            <span class="lang-tag">🇬🇧 EN</span>
+                            <div class="lang-text" id="preview-en-text">Loading template…</div>
+                        </div>
+                        <div class="preview-lang-block" id="preview-ua">
+                            <span class="lang-tag">🇺🇦 UA</span>
+                            <div class="lang-text" id="preview-ua-text">Завантаження шаблону…</div>
                         </div>
                     </div>
 
-                    <button type="submit" id="dispatch-btn">
-                        <span>Sign & Broadcast (Ed25519)</span>
-                    </button>
+                    <div class="dispatcher-actions">
+                        <button type="button" id="dispatch-btn" class="btn-primary">
+                            <span>Review and send</span>
+                        </button>
+                    </div>
                 </form>
-                <pre id="dispatch-result" class="hidden"></pre>
 
-                <!-- Official Laptop BLE Transmitter Status -->
-                <div class="ble-ota-card" id="ble-ota-card">
-                    <div class="ble-ota-header">
-                        <span class="ble-ota-indicator" id="ble-ota-dot"></span>
-                        <strong id="ble-ota-title">Laptop Official BLE Transmitter</strong>
+                <div id="dispatch-error-banner" class="alert-error-banner hidden"></div>
+            </div>
+
+            <!-- 2. Live Transmitter Panel (WP 3.0) -->
+            <div class="panel live-panel" id="transmitter-panel">
+                <div class="panel-header-sub">
+                    <h3>Live Transmitter</h3>
+                    <span class="tx-badge" id="tx-state-badge">Standby</span>
+                </div>
+                <div class="tx-metrics-grid">
+                    <div class="tx-metric-row">
+                        <span class="tx-metric-name">Active Alert:</span>
+                        <code class="tx-metric-val" id="tx-alert-id">None loaded</code>
                     </div>
-                    <div class="ble-ota-info">
-                        <span id="ble-ota-status">Scanning Windows BLE…</span>
-                        <span class="ble-served-badge" id="ble-served-badge">0 devices served</span>
+                    <div class="tx-metric-row">
+                        <span class="tx-metric-name">Time remaining:</span>
+                        <span class="tx-metric-val countdown" id="tx-countdown">--:--:--</span>
                     </div>
-                    <div class="ble-ota-controls">
-                        <button type="button" id="ble-toggle-btn" class="ble-toggle-btn">Start BLE Broadcast</button>
+                    <div class="tx-metric-row">
+                        <span class="tx-metric-name">Transmitter count:</span>
+                        <strong class="tx-metric-val" id="tx-served-count">0 first-hop transfers (approximate)</strong>
+                    </div>
+                </div>
+
+                <div class="tx-controls">
+                    <button type="button" id="ble-toggle-btn" class="btn-secondary" disabled>Start BLE Beacon</button>
+                </div>
+
+                <div class="transmitter-footnote">
+                    Counts phones that fetched the alert directly from this laptop. Phones that receive it from other phones cannot be counted. Approximate, because phone addresses change.
+                </div>
+            </div>
+
+            <!-- 3. Sent Alerts Log (WP 5.0) -->
+            <div class="panel live-panel" id="alerts-log-panel">
+                <div class="panel-header-sub">
+                    <h3>Sent Alerts Log</h3>
+                    <a href="/api/alerts/export.csv" id="export-csv-btn" class="btn-small" download="alerts_log.csv">📥 Export CSV</a>
+                </div>
+                <div class="log-table-wrapper">
+                    <table class="audit-log-table" id="audit-log-table">
+                        <thead>
+                            <tr>
+                                <th>Time (UTC)</th>
+                                <th>Update</th>
+                                <th>Template</th>
+                                <th>Target</th>
+                                <th>Valid</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-log-tbody">
+                            <tr>
+                                <td colspan="6" class="empty-log-cell">No alerts dispatched in this session.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════════
+             COLUMN 2: COVERAGE PLANNER (Amber Hatch Strip)
+             ══════════════════════════════════════════════════════════ -->
+        <section id="coverage-planner-col" class="console-column">
+            <div class="column-header-strip planner-strip">
+                <span class="strip-badge">SIMULATION</span>
+                <span class="strip-title">COVERAGE PLANNER</span>
+            </div>
+
+            <!-- Permanent Non-Dismissible Simulation Banner (WP 1.2) -->
+            <div class="simulation-banner">
+                SIMULATION ONLY. Not live data. Phones do not report back, so real coverage cannot be measured.
+            </div>
+
+            <!-- Map Panel -->
+            <div class="panel planner-panel" id="map-panel">
+                <div class="panel-header">
+                    <div class="map-title-area">
+                        <h2>Coverage Planner (Simulation)</h2>
+                        <div class="map-caption" id="map-caption">Kraków Mesh Coverage (simulated example run)</div>
+                    </div>
+                    <div class="legend">
+                        <span class="legend-item seed">● Seeds</span>
+                        <span class="legend-item reached">● Reached (simulated)</span>
+                        <span class="legend-item unreached">● Unreached (simulated)</span>
+                    </div>
+                </div>
+
+                <div class="map-wrapper">
+                    <div id="map-container"></div>
+                    <!-- Offline notice overlay if tiles fail -->
+                    <div id="offline-map-notice" class="offline-map-notice hidden">
+                        Basemap unavailable offline. Showing simulation coordinates grid.
                     </div>
                 </div>
             </div>
 
-            <!-- Simulation Controls -->
-            <div class="panel" id="sim-controls">
+            <!-- Simulation Controls (Directly below Map, WP 2.3) -->
+            <div class="panel planner-panel" id="sim-controls">
                 <h3>⚙ Simulation Controls</h3>
-                <div class="control-row">
-                    <label for="sim-civilians">Civilians</label>
-                    <input type="number" id="sim-civilians" value="75" min="10" max="2000">
+                <div class="sim-controls-grid">
+                    <div class="control-row">
+                        <label for="sim-civilians">Civilians</label>
+                        <input type="number" id="sim-civilians" value="75" min="10" max="2000">
+                    </div>
+                    <div class="control-row">
+                        <label for="sim-seeds">Seeds</label>
+                        <input type="number" id="sim-seeds" value="3" min="1" max="10">
+                    </div>
+                    <div class="control-row">
+                        <label for="sim-runs">Runs</label>
+                        <input type="number" id="sim-runs" value="1" min="1" max="50">
+                    </div>
+                    <div class="control-row">
+                        <label for="sim-scenario">Scenario</label>
+                        <select id="sim-scenario">
+                            <option value="baseline" selected>Baseline (Urban)</option>
+                            <option value="pessimistic">Pessimistic (Crowded/Shielded)</option>
+                        </select>
+                    </div>
+                    <div class="control-row">
+                        <label for="sim-duration">Duration (s)</label>
+                        <input type="number" id="sim-duration" value="900" min="60" max="3600">
+                    </div>
+                    <div class="control-row">
+                        <label for="sim-range">Radio Range (m)</label>
+                        <input type="number" id="sim-range" value="50" min="10" max="200">
+                    </div>
                 </div>
-                <div class="control-row">
-                    <label for="sim-duration">Duration (s)</label>
-                    <input type="number" id="sim-duration" value="900" min="60" max="3600">
+
+                <div class="sim-actions-row">
+                    <button type="button" id="run-sim-btn" class="btn-primary">▶ Run simulation</button>
+                    <button type="button" id="cancel-sim-btn" class="btn-secondary hidden">✕ Cancel</button>
                 </div>
-                <div class="control-row">
-                    <label for="sim-range">Radio Range (m)</label>
-                    <input type="number" id="sim-range" value="50" min="10" max="200">
+
+                <!-- Simulation Progress -->
+                <div id="sim-progress-container" class="sim-progress-container hidden">
+                    <div class="progress-bar-track">
+                        <div id="sim-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="sim-progress-label">Simulating run 1 of 1…</span>
                 </div>
-                <button id="run-sim-btn">▶ Run Simulation</button>
+
+                <!-- Monte Carlo Results Summary Line (WP 6.4) -->
+                <div id="sim-results-line" class="sim-results-line">
+                    Run a simulation to see results
+                </div>
+
+                <!-- Expandable Assumptions Box (WP 6.6) -->
+                <details class="assumptions-box">
+                    <summary>Assumptions: Simplified model, not a measurement</summary>
+                    <div class="assumptions-content">
+                        <ul>
+                            <li><strong>Path Loss:</strong> PL(d) = 40.0 + 22.0 × log₁₀(d) + 2 dB body loss + N(0, 4) shadowing</li>
+                            <li><strong>Receiver Sensitivity:</strong> -90 dBm on BLE 1M PHY</li>
+                            <li><strong>Trickle Algorithm:</strong> RFC 6206 with I_min = 1.0s, I_max = 16.0s, K = 3</li>
+                            <li><strong>Mobility:</strong> Random waypoints on Kraków TAURON Arena pedestrian vector network</li>
+                        </ul>
+                        <p class="assumptions-notice">
+                            Notice: Real phones never report back to the sender. Simulation models density thresholds for contingency planning only.
+                        </p>
+                    </div>
+                </details>
             </div>
-        </aside>
+
+            <!-- Simulated Metric Cards (WP 1.1) -->
+            <div id="metric-cards">
+                <div class="metric-card" id="mc-coverage">
+                    <div class="metric-value" id="mv-coverage">Run a simulation to see results</div>
+                    <div class="metric-label">Reached (sim)</div>
+                </div>
+                <div class="metric-card" id="mc-broadcasts">
+                    <div class="metric-value" id="mv-broadcasts">—</div>
+                    <div class="metric-label">Broadcasts (sim)</div>
+                </div>
+                <div class="metric-card" id="mc-duplicates">
+                    <div class="metric-value" id="mv-duplicates">—</div>
+                    <div class="metric-label">Duplicates (sim)</div>
+                </div>
+                <div class="metric-card" id="mc-suppressed">
+                    <div class="metric-value" id="mv-suppressed">—</div>
+                    <div class="metric-label">Suppressed (sim)</div>
+                </div>
+            </div>
+
+            <!-- Simulated Charts (WP 1.1) -->
+            <div class="panel planner-panel chart-panel">
+                <h3>Coverage Over Time (sim)</h3>
+                <canvas id="chart-coverage"></canvas>
+            </div>
+            <div class="panel planner-panel chart-panel">
+                <h3>Broadcasts & Redundancy (sim)</h3>
+                <canvas id="chart-forwarding"></canvas>
+            </div>
+        </section>
     </main>
 
-    <!-- Scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <!-- ══════════════════════════════════════════════════════════
+         MODALS & OVERLAYS
+         ══════════════════════════════════════════════════════════ -->
+
+    <!-- Confirmation Dialog (WP 4.6, 4.7) -->
+    <div id="confirm-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Confirm broadcast</h3>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-field-row"><span class="c-label">Template:</span> <strong id="cm-template">—</strong></div>
+                <div class="confirm-field-row"><span class="c-label">Target:</span> <strong id="cm-target">—</strong></div>
+                <div class="confirm-field-row"><span class="c-label">Valid for:</span> <span><span id="cm-duration">120</span> min (expires <span id="cm-expires">--:--</span> UTC)</span></div>
+                <div class="confirm-field-row"><span class="c-label">Update number:</span> <strong id="cm-update">1</strong></div>
+                <div class="confirm-field-row"><span class="c-label">Max hops:</span> <strong id="cm-ttl">15</strong></div>
+                <div class="confirm-field-row"><span class="c-label">Packet size:</span> <strong id="cm-packet-bytes">--</strong> bytes</div>
+                <div class="confirm-field-row"><span class="c-label">Signing key:</span> <code id="cm-key">—</code></div>
+                <div class="confirm-field-row"><span class="c-label">System time:</span> <span id="cm-system-time">--:--:--</span> UTC</div>
+
+                <div id="cm-escape-hatch-warning" class="escape-warning hidden">
+                    <p class="warning-text">⚠️ FREE TEXT bypasses the reviewed codebook: "<span id="cm-free-text-quote"></span>"</p>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="cm-check-free-text"> I have checked this text
+                    </label>
+                </div>
+
+                <p class="modal-disclaimer">
+                    Alerts cannot be recalled. To correct a mistake, send an update with a higher update number.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cm-cancel-btn" class="btn-secondary">Cancel</button>
+                <button type="button" id="cm-confirm-btn" class="btn-primary">Sign and send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Reasons Modal (Section 4) -->
+    <div id="error-reasons-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header header-danger">
+                <h3>🚨 System Error Reasons</h3>
+            </div>
+            <div class="modal-body">
+                <ul id="error-reasons-list" class="error-list">
+                    <li>No active errors detected.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="error-modal-close-btn" class="btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts (Vendored locally for offline blackout resilience) -->
+    <script src="/static/vendor/leaflet.js"></script>
+    <script src="/static/vendor/chart.umd.min.js"></script>
     <script src="/static/map.js"></script>
     <script src="/static/telemetry.js"></script>
     <script src="/static/dispatcher.js"></script>

@@ -1,0 +1,39 @@
+{
+  "protocol_version": 2,
+  "codebook_version": 1,
+  "max_packet_bytes": 240,
+  "min_duration_minutes": 5,
+  "max_duration_minutes": 1440,
+  "default_duration_minutes": 120,
+  "min_ttl": 1,
+  "max_ttl": 15,
+  "default_ttl": 15,
+  "max_free_text_bytes": 60,
+  "field_order": [
+    "v",
+    "cb_v",
+    "id",
+    "seq",
+    "ts",
+    "dur",
+    "tid",
+    "loc_type",
+    "loc_ref",
+    "custom_text"
+  ],
+  "android_binary_packet": {
+    "version": 1,
+    "total_bytes": 79,
+    "payload_bytes": 15,
+    "signature_bytes": 64,
+    "fields": [
+      {"name": "version", "type": "uint8", "bytes": 1},
+      {"name": "msg_id", "type": "uint32_be", "bytes": 4},
+      {"name": "issued_at", "type": "uint32_be", "bytes": 4},
+      {"name": "valid_minutes", "type": "uint16_be", "bytes": 2},
+      {"name": "template", "type": "uint16_be", "bytes": 2},
+      {"name": "param", "type": "uint16_be", "bytes": 2},
+      {"name": "signature", "type": "bytes", "bytes": 64}
+    ]
+  }
+}

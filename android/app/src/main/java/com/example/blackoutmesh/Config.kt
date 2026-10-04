@@ -13,12 +13,13 @@ object Config {
     const val PUBLIC_KEY_HEX = "9d2b0f035fd0feebcd89cc5eed8695163832cfc0b79388c1007b6ee15ed71d34"
     const val SEED_PACKET_HEX = "01f0c1fdbb6ac102410078000100023e40d822df5dc81ff019bc889633b9f4e68c30ac94db883f9b02db92f1555ab9b6a4b211cb697ce81feb2983662c895a540f8cfb502fa34872430cdf646f7f05"
 
-    // Always-on tuning. LOW_LATENCY ensures fast connection response and zero dropped beacons.
-    const val SCAN_MODE = ScanSettings.SCAN_MODE_LOW_LATENCY
+    // Background-safe scanning. SCAN_MODE_BALANCED prevents Android's 30-minute background scan ban
+    // while providing fast discovery cycles and low battery drain.
+    const val SCAN_MODE = ScanSettings.SCAN_MODE_BALANCED
     const val ADVERTISE_MODE = AdvertiseSettings.ADVERTISE_MODE_BALANCED
 
-    // Do not reconnect to the same phone more often than this
-    const val REFETCH_COOLDOWN_MS = 30_000L
+    // Re-check interval for the same broadcaster/peer device (6s for fast update reception)
+    const val REFETCH_COOLDOWN_MS = 6_000L
 
     // Ask for a bigger Bluetooth message size so the 79-byte packet fits in one read
     const val MTU = 185

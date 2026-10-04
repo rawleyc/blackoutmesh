@@ -26,6 +26,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <!-- Always-on Foreground Service & resilience permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -49,12 +52,13 @@
         android:label="@string/app_name"
         android:roundIcon="@android:drawable/ic_dialog_alert"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/Theme.BlackoutMesh" >
         <activity
             android:name="com.example.blackoutmesh.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.BlackoutMesh" >
+            android:showWhenLocked="true"
+            android:theme="@style/Theme.BlackoutMesh"
+            android:turnScreenOn="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -72,6 +76,8 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 

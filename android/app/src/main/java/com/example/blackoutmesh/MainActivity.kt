@@ -80,6 +80,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Auto-start mesh service on launch without requiring manual "Start" tap
+        if (AlertStore(this).isEnabled()) {
+            withPermissions {
+                startMeshService()
+                if (intent.getBooleanExtra("minimized", false)) {
+                    moveTaskToBack(true)
+                }
+            }
+        }
+
         setContent {
             MaterialTheme { Screen() }
         }
@@ -118,8 +129,13 @@ class MainActivity : ComponentActivity() {
                 OutlinedButton(onClick = { stopMeshService() }) { Text("Stop") }
             }
 
-            OutlinedButton(onClick = { requestBatteryExemption() }) {
-                Text("Allow unrestricted battery")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { requestBatteryExemption() }) {
+                    Text("Battery exemption")
+                }
+                Button(onClick = { moveTaskToBack(true) }) {
+                    Text("Minimize")
+                }
             }
 
             LazyColumn {

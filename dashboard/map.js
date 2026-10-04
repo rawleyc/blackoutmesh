@@ -1,74 +1,63 @@
 /**
- * WP 3.1 — Kraków Pedestrian Mesh Renderer (Leaflet)
+ * WP 3.1 & 8.2 — Kraków Pedestrian Mesh Renderer (Leaflet)
  *
- * Renders the TAURON Arena vicinity with dynamic node markers:
- *   Red stars    = Seed devices (emergency squads)
- *   Green dots   = Verified alert reception
- *   Grey dots    = Unreached devices
+ * Implements:
+ * - Kraków TAURON Arena pedestrian mesh visualizer
+ * - Dynamic node markers: Seeds, Reached (simulated), Unreached (simulated)
+ * - Offline tile fallback detection with notice (WP 8.2)
+ * - Seed caption updater (WP 6.5)
+ * - Esri licensing attribution retained (Section 3)
  */
 
 const MeshMap = (() => {
     let map = null;
     let nodeLayer = null;
-    let cartoLayer = null;
     let esriDarkLayer = null;
     let osmLayer = null;
-    let currentApiKey = '';
+    let offlineFallbackTriggered = false;
 
     // Kraków TAURON Arena vicinity
     const CENTER = [50.0647, 19.9650];
     const ZOOM = 15;
 
-    function getCartoUrl(apiKey) {
-        if (apiKey) {
-            // CARTO Basemaps uses ?key= (not ?api_key=)
-            return `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(apiKey)}`;
-        }
-        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-    }
-
-    function init(containerId, apiKey = '') {
-        currentApiKey = apiKey;
+    function init(containerId) {
         map = L.map(containerId, {
             zoomControl: false,
             attributionControl: false,
         }).setView(CENTER, ZOOM);
 
-        // 1. Tactical Dark Canvas (Unwatermarked, high-contrast dark theme)
+        // Tactical Dark Canvas (Esri Basemap)
         esriDarkLayer = L.tileLayer(
             'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
             {
                 maxZoom: 19,
-                attribution: '© Esri, HERE, Garmin | BlackoutMesh',
+                attribution: '© Esri, HERE, Garmin | BlackoutMesh Tactical Console',
             }
         );
 
-        // 2. CARTO Dark Matter (uses ?key= with Basemap API key)
-        cartoLayer = L.tileLayer(getCartoUrl(currentApiKey), {
-            maxZoom: 19,
-            subdomains: 'abcd',
-            attribution: '© CARTO | © OpenStreetMap',
-        });
-
-        // 3. OpenStreetMap Standard
+        // OpenStreetMap Standard fallback
         osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors',
         });
 
-        // Default to clean Tactical Dark Canvas
+        // Offline detection: listen for tile load failures (WP 8.2)
+        esriDarkLayer.on('tileerror', handleTileError);
+        osmLayer.on('tileerror', handleTileError);
+
         esriDarkLayer.addTo(map);
 
         const baseMaps = {
-            "Tactical Dark (Clean)": esriDarkLayer,
-            "CARTO Dark Matter": cartoLayer,
+            "Tactical Dark (Esri)": esriDarkLayer,
             "OpenStreetMap": osmLayer,
         };
 
         L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
         L.control.zoom({ position: 'topright' }).addTo(map);
+
+        // Esri licensing attribution is mandatory
         L.control.attribution({ position: 'bottomright', prefix: false })
-            .addAttribution('BlackoutMesh Tactical Console')
+            .addAttribution('© Esri, HERE, Garmin | BlackoutMesh')
             .addTo(map);
 
         nodeLayer = L.layerGroup().addTo(map);
@@ -76,19 +65,33 @@ const MeshMap = (() => {
         return map;
     }
 
-    function setApiKey(apiKey) {
-        if (!apiKey || apiKey === currentApiKey) return;
-        currentApiKey = apiKey;
-        if (cartoLayer) {
-            cartoLayer.setUrl(getCartoUrl(currentApiKey));
+    function handleTileError() {
+        if (!offlineFallbackTriggered) {
+            offlineFallbackTriggered = true;
+            const notice = document.getElementById('offline-map-notice');
+            if (notice) {
+                notice.classList.remove('hidden');
+            }
         }
     }
 
-    function updateNodes(positions, types) {
+    function updateCaption(seed) {
+        const caption = document.getElementById('map-caption');
+        if (caption) {
+            if (seed !== undefined && seed !== null) {
+                caption.textContent = `Kraków Mesh Coverage (simulated example run) — Seed: ${seed}`;
+            } else {
+                caption.textContent = 'Kraków Mesh Coverage (simulated example run)';
+            }
+        }
+    }
+
+    function updateNodes(positions, types, seed) {
         if (!nodeLayer) return;
         nodeLayer.clearLayers();
 
-        // positions are in projected CRS — we need lat/lon
+        updateCaption(seed);
+
         if (!positions || positions.length === 0) return;
 
         const colors = {
@@ -102,12 +105,15 @@ const MeshMap = (() => {
             const type = types[i] || 'unreached';
             const color = colors[type] || colors.unreached;
             const radius = type === 'seed' ? 8 : 5;
-            const opacity = type === 'unreached' ? 0.5 : 0.9;
+            const opacity = type === 'unreached' ? 0.45 : 0.9;
 
-            // Note: positions from simulation are projected meters (EPSG:2180), not lat/lon.
-            // For the dashboard visualizer, map from projected coordinates to lat/lon around TAURON Arena.
+            // Map EPSG:2180 projected coordinates to lat/lon around TAURON Arena
             const lat = CENTER[0] + (y - 5560800) / 111320;
             const lon = CENTER[1] + (x - 421400) / (111320 * Math.cos(CENTER[0] * Math.PI / 180));
+
+            const typeLabel = type === 'seed'
+                ? 'SEED (Simulated)'
+                : (type === 'reached' ? 'REACHED (Simulated)' : 'UNREACHED (Simulated)');
 
             const marker = L.circleMarker([lat, lon], {
                 radius,
@@ -118,14 +124,14 @@ const MeshMap = (() => {
             });
 
             marker.bindPopup(
-                `<strong>${type.toUpperCase()}</strong><br>` +
-                `Node #${i}<br>` +
-                `Position: (${x.toFixed(0)}, ${y.toFixed(0)})`
+                `<strong>${typeLabel}</strong><br>` +
+                `Simulated Node #${i}<br>` +
+                `Coordinates: (${x.toFixed(0)}, ${y.toFixed(0)})`
             );
 
             nodeLayer.addLayer(marker);
         }
     }
 
-    return { init, updateNodes, setApiKey };
+    return { init, updateNodes, updateCaption };
 })();

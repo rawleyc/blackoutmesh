@@ -17,12 +17,12 @@ class AlertStore(context: Context) {
         prefs.edit().remove("alert").apply()
     }
 
-    // Did the user want the service on? Used after a reboot.
+    // Did the user want the service on? Defaults to true for auto-start.
     fun setEnabled(on: Boolean) {
         prefs.edit().putBoolean("enabled", on).apply()
     }
 
-    fun isEnabled(): Boolean = prefs.getBoolean("enabled", false)
+    fun isEnabled(): Boolean = prefs.getBoolean("enabled", true)
 
     // So the same alert never pops up twice after a restart.
     fun lastNotified(): Long = prefs.getLong("notified", -1L)

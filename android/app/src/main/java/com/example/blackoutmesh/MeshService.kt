@@ -23,6 +23,7 @@ class MeshService : Service() {
 
     private var mesh: Mesh? = null
     private lateinit var store: AlertStore
+    private var serviceWakeLock: android.os.PowerManager.WakeLock? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -47,6 +48,13 @@ class MeshService : Service() {
         store = AlertStore(applicationContext)
         MeshRepository.attachLogFile(File(filesDir, "mesh.log"))
         Notifications.createChannels(this)
+
+        // Hold partial wake lock to keep background mesh radio loops responsive when screen is off
+        try {
+            val pm = getSystemService(Context.POWER_SERVICE) as? android.os.PowerManager
+            serviceWakeLock = pm?.newWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, "BlackoutMesh:ServiceLock")
+            serviceWakeLock?.acquire()
+        } catch (_: Exception) {}
 
         // Android must see a foreground notification within a few seconds
         try {
@@ -73,10 +81,13 @@ class MeshService : Service() {
             onLog = { MeshRepository.log(it) },
             onAlert = { alert ->
                 MeshRepository.alertText.value = alert?.let { Codebook.render(it) }
-                // Notify once per alert, even across restarts
-                if (alert != null && store.lastNotified() != alert.msgId) {
-                    store.setLastNotified(alert.msgId)
-                    Notifications.showAlert(applicationContext, Codebook.render(alert))
+                // Notify once per unique alert state (including template/param/sequence updates)
+                if (alert != null) {
+                    val alertKey = alert.msgId xor (alert.template.toLong() shl 32) xor (alert.param.toLong() shl 48) xor (alert.issuedAt shl 16)
+                    if (store.lastNotified() != alertKey) {
+                        store.setLastNotified(alertKey)
+                        Notifications.showAlert(applicationContext, Codebook.render(alert))
+                    }
                 }
             }
         )
@@ -92,7 +103,10 @@ class MeshService : Service() {
                 return START_NOT_STICKY
             }
             ACTION_SEED -> m.seedWithTestAlert()
-            ACTION_CLEAR -> m.clearCurrentAlert()
+            ACTION_CLEAR -> {
+                store.setLastNotified(-1L)
+                m.clearCurrentAlert()
+            }
             else -> m.start()          // also runs when Android restarts us (intent is null)
         }
 
@@ -102,6 +116,11 @@ class MeshService : Service() {
 
     override fun onDestroy() {
         runCatching { unregisterReceiver(btReceiver) }
+        try {
+            if (serviceWakeLock?.isHeld == true) {
+                serviceWakeLock?.release()
+            }
+        } catch (_: Exception) {}
         mesh?.stop()
         mesh = null
         MeshRepository.running.value = false

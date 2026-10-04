@@ -1,634 +1,964 @@
 /* ═══════════════════════════════════════════════════════════════
    BlackoutMesh Tactical Dashboard — Design System
+   WBS Compliant Two-Column Layout (Live Ops vs Coverage Planner)
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-    /* Dark theme palette */
+    /* Dark tactical palette */
     --bg-primary: #0a0e17;
     --bg-secondary: #111827;
-    --bg-panel: #1a2233;
-    --bg-card: #1e293b;
-    --bg-input: #0f172a;
+    --bg-panel: #161f30;
+    --bg-card: #1c273c;
+    --bg-input: #0c1322;
+    --bg-hover: #22324e;
 
-    --text-primary: #f1f5f9;
+    --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
 
+    --accent-blue: #2563eb;
+    --accent-blue-glow: rgba(37, 99, 235, 0.35);
+    --accent-amber: #d97706;
+    --accent-amber-dark: #b45309;
     --accent-green: #10b981;
     --accent-red: #ef4444;
-    --accent-blue: #3b82f6;
     --accent-purple: #8b5cf6;
-    --accent-orange: #f59e0b;
-    --accent-cyan: #06b6d4;
 
-    --border: #1e293b;
-    --border-hover: #334155;
+    --border: #24324a;
+    --border-subtle: #1e293b;
+    --border-focus: #3b82f6;
 
-    --glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
-    --glow-red: 0 0 20px rgba(239, 68, 68, 0.3);
-    --glow-blue: 0 0 20px rgba(59, 130, 246, 0.3);
+    --radius: 8px;
+    --radius-sm: 4px;
+    --transition: 0.15s ease-in-out;
 
-    --radius: 12px;
-    --radius-sm: 8px;
-    --transition: 0.2s ease;
-
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 html, body {
     height: 100%;
     font-family: var(--font-sans);
     background: var(--bg-primary);
     color: var(--text-primary);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-/* ── Top Bar ─────────────────────────────────────── */
+/* ── Top Bar (WP 2.4) ────────────────────────────────── */
 
 #top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
-    height: 56px;
-    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-panel));
+    padding: 0 20px;
+    height: 60px;
+    background: linear-gradient(180deg, var(--bg-secondary), var(--bg-panel));
     border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-    z-index: 100;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .logo-icon {
-    font-size: 1.5rem;
-    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
+    font-size: 1.4rem;
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6));
 }
 
 .logo h1 {
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.5px;
-    background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
 }
 
 .tag {
-    font-size: 0.7rem;
-    font-weight: 500;
+    font-size: 0.65rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text-muted);
-    padding: 2px 8px;
+    padding: 2px 6px;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
 }
 
-.status-cluster {
+.header-status-group {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
+/* Status Pill (Section 4) */
 .status-pill {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
+    gap: 8px;
+    padding: 5px 12px;
     border-radius: 20px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
     font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
+    font-weight: 700;
     letter-spacing: 0.5px;
+    cursor: pointer;
+    user-select: none;
+    transition: var(--transition);
 }
 
 .status-pill .dot {
-    width: 8px; height: 8px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    background: var(--accent-orange);
-    box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
-    animation: pulse 2s ease-in-out infinite;
 }
 
-.status-pill.active .dot {
-    background: var(--accent-green);
-    box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+.status-pill .subtext {
+    font-weight: 400;
+    font-size: 0.7rem;
+    opacity: 0.85;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+/* Standby State: Grey, "Ready" */
+.status-standby {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+}
+.status-standby .dot {
+    background: #94a3b8;
+}
+
+/* Transmitting State: Blue, Pulsing */
+.status-transmitting {
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid var(--accent-blue);
+    color: #60a5fa;
+    box-shadow: 0 0 12px var(--accent-blue-glow);
+}
+.status-transmitting .dot {
+    background: var(--accent-blue);
+    box-shadow: 0 0 8px #60a5fa;
+    animation: beacon-pulse 1.2s infinite ease-in-out;
+}
+
+/* Error State: Red, Clickable for reasons */
+.status-error {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid var(--accent-red);
+    color: #f87171;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    animation: error-shake 0.3s ease;
+}
+.status-error .dot {
+    background: var(--accent-red);
+    box-shadow: 0 0 8px #f87171;
+}
+
+@keyframes beacon-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.2); }
+}
+
+@keyframes error-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
+/* Key Badge Container */
+.key-badge-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-card);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.key-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #fbbf24;
+    letter-spacing: 0.5px;
 }
 
 .authority-key {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.7rem;
+    gap: 4px;
+    font-size: 0.75rem;
 }
 
 .authority-key code {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.copy-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
     color: var(--text-muted);
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    padding: 2px 4px;
+    border-radius: 2px;
+    transition: var(--transition);
+}
+.copy-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
 }
 
-/* ── Main Grid ───────────────────────────────────── */
+/* UTC Clock */
+.utc-clock {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 
-#dashboard-grid {
+/* ── Console Grid: Two Columns (WP 2.0) ──────────────── */
+
+#console-grid {
     display: grid;
-    grid-template-columns: 1fr 420px;
-    height: calc(100vh - 56px);
-    gap: 0;
+    grid-template-columns: minmax(420px, 1fr) minmax(480px, 1.25fr);
+    gap: 20px;
+    padding: 20px;
+    min-height: calc(100vh - 60px);
 }
 
-/* ── Panels ──────────────────────────────────────── */
+.console-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Column Header Strips (WP 2.2) */
+.column-header-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.live-strip {
+    background: var(--accent-blue);
+    color: #ffffff;
+    border: 1px solid #3b82f6;
+}
+
+.planner-strip {
+    background: repeating-linear-gradient(
+        45deg,
+        var(--accent-amber),
+        var(--accent-amber) 12px,
+        var(--accent-amber-dark) 12px,
+        var(--accent-amber-dark) 24px
+    );
+    color: #ffffff;
+    border: 1px solid #f59e0b;
+}
+
+.strip-badge {
+    background: rgba(0, 0, 0, 0.35);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+}
+
+.strip-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+/* Permanent Non-Dismissible Simulation Banner (WP 1.2) */
+.simulation-banner {
+    background: rgba(217, 119, 6, 0.15);
+    border: 1px solid var(--accent-amber);
+    color: #fbbf24;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Panel Components ────────────────────────────────── */
 
 .panel {
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 16px;
-    margin: 8px;
-}
-
-#map-panel {
-    margin: 12px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    gap: 12px;
 }
 
-.panel-header {
+.panel-header, .panel-header-sub {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 10px;
+}
+
+.title-with-sub h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.dispatcher-subline {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+.dispatcher-subline code {
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+}
+
+.badge-compact {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+/* ── Forms and Inputs ────────────────────────────────── */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.label-with-counter {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
 }
 
-.panel-header h2 {
-    font-size: 1rem;
+.byte-counter {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: #10b981;
+}
+.byte-counter.negative {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+select, input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.control-row-inline {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+/* Stacked Trilingual Preview (WP 4.4) */
+.stacked-preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+}
+
+.preview-header-label {
+    font-size: 0.72rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.preview-lang-block {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+
+.lang-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.lang-text {
+    color: var(--text-primary);
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary, .btn-small {
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+}
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+.btn-secondary:hover:not(:disabled) {
+    background: var(--bg-hover);
+    border-color: var(--border-focus);
+}
+.btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-small {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    text-decoration: none;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+.btn-small:hover {
+    color: #ffffff;
+    border-color: var(--border-focus);
+}
+
+.alert-error-banner {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid var(--accent-red);
+    color: #f87171;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+}
+
+/* ── Live Transmitter Panel (WP 3.0) ─────────────────── */
+
+.tx-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+.tx-badge.transmitting {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: var(--accent-blue);
+    color: #60a5fa;
+}
+
+.tx-metrics-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--bg-card);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.tx-metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+}
+
+.tx-metric-name {
+    color: var(--text-muted);
+}
+
+.tx-metric-val {
+    color: var(--text-primary);
+}
+
+.tx-metric-val.countdown {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+.tx-controls {
+    display: flex;
+}
+.tx-controls button {
+    width: 100%;
+}
+
+.transmitter-footnote {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+    padding-top: 4px;
+    border-top: 1px dashed var(--border-subtle);
+}
+
+/* ── Sent Alerts Log Panel (WP 5.0) ──────────────────── */
+
+.log-table-wrapper {
+    overflow-x: auto;
+    max-height: 220px;
+}
+
+.audit-log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.audit-log-table th {
+    text-align: left;
+    padding: 6px 8px;
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+}
+
+.audit-log-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+}
+
+.empty-log-cell {
+    text-align: center;
+    padding: 16px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.status-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+.status-badge.active {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+.status-badge.expired {
+    background: rgba(100, 116, 139, 0.2);
+    color: #94a3b8;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+.status-badge.replaced {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+/* ── Planner: Map & Controls (WP 6.0) ────────────────── */
+
+.map-title-area h2 {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.map-caption {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
 }
 
 .legend {
     display: flex;
-    gap: 16px;
-    font-size: 0.75rem;
+    gap: 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
 }
+.legend-item.seed { color: #ef4444; }
+.legend-item.reached { color: #10b981; }
+.legend-item.unreached { color: #64748b; }
 
-.legend-item { font-weight: 500; }
-.legend-item.seed { color: var(--accent-red); }
-.legend-item.reached { color: var(--accent-green); }
-.legend-item.unreached { color: var(--text-muted); }
-
-#map-container {
-    flex: 1;
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 380px;
     border-radius: var(--radius-sm);
     overflow: hidden;
-    min-height: 400px;
+    border: 1px solid var(--border);
+    background: #0b111a;
 }
 
-/* ── Right Panel ─────────────────────────────────── */
+#map-container {
+    width: 100%;
+    height: 100%;
+}
 
-#right-panel {
-    overflow-y: auto;
-    padding: 12px 12px 12px 0;
+.offline-map-notice {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid var(--accent-amber);
+    color: #fbbf24;
+    padding: 6px 10px;
+    font-size: 0.72rem;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+/* Simulation Controls Grid (WP 2.3, 6.3) */
+.sim-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.control-row {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    gap: 4px;
 }
 
-/* ── Metric Cards ────────────────────────────────── */
+.sim-actions-row {
+    display: flex;
+    gap: 10px;
+}
+.sim-actions-row button {
+    flex: 1;
+}
 
+.sim-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.progress-bar-track {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-card);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    background: var(--accent-blue);
+    transition: width 0.2s ease;
+}
+#sim-progress-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.sim-results-line {
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #38bdf8;
+    line-height: 1.4;
+}
+
+/* Assumptions Expandable Box (WP 6.6) */
+.assumptions-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+.assumptions-box summary {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+    color: var(--text-muted);
+}
+.assumptions-box summary:hover {
+    color: var(--text-primary);
+}
+.assumptions-content {
+    padding: 10px 14px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    line-height: 1.4;
+}
+.assumptions-content ul {
+    margin-left: 18px;
+}
+.assumptions-notice {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 4px;
+}
+
+/* Simulated Metric Cards (WP 1.1) */
 #metric-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 10px;
 }
 
 .metric-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 14px 10px;
+    padding: 12px;
     text-align: center;
-    transition: border-color var(--transition), box-shadow var(--transition);
 }
-
-.metric-card:hover {
-    border-color: var(--border-hover);
-}
-
-#mc-coverage { border-top: 3px solid var(--accent-green); }
-#mc-broadcasts { border-top: 3px solid var(--accent-blue); }
-#mc-duplicates { border-top: 3px solid var(--accent-purple); }
-#mc-suppressed { border-top: 3px solid var(--accent-orange); }
 
 .metric-value {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 800;
+    color: #ffffff;
     font-family: var(--font-mono);
-    line-height: 1.2;
 }
 
-#mc-coverage .metric-value { color: var(--accent-green); }
-#mc-broadcasts .metric-value { color: var(--accent-blue); }
-#mc-duplicates .metric-value { color: var(--accent-purple); }
-#mc-suppressed .metric-value { color: var(--accent-orange); }
+#mv-coverage {
+    font-size: 0.8rem;
+    color: #34d399;
+}
 
 .metric-label {
-    font-size: 0.65rem;
-    font-weight: 600;
+    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: var(--text-muted);
     margin-top: 4px;
-}
-
-/* ── Charts ──────────────────────────────────────── */
-
-.chart-panel {
-    padding: 12px;
-}
-
-.chart-panel h3 {
-    font-size: 0.8rem;
     font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text-secondary);
 }
 
+/* Charts */
+.chart-panel {
+    height: 220px;
+}
+.chart-panel h3 {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
 .chart-panel canvas {
     max-height: 160px;
 }
 
-/* ── Dispatch Panel ──────────────────────────────── */
+/* ── Modals & Dialogs (WP 4.6, 4.7 & Section 4) ──────── */
 
-.panel-header-sub {
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    animation: modal-pop 0.2s ease-out;
+}
+
+@keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+}
+.modal-header.header-danger {
+    background: rgba(239, 68, 68, 0.2);
+    border-bottom: 1px solid var(--accent-red);
+}
+.modal-header h3 {
+    font-size: 1.05rem;
+    color: #ffffff;
+}
+
+.modal-body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.85rem;
+}
+
+.confirm-field-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.confirm-field-row .c-label {
+    color: var(--text-muted);
+}
+.confirm-field-row strong, .confirm-field-row code {
+    color: var(--text-primary);
 }
 
-#dispatch-panel h3 {
-    font-size: 0.9rem;
-    font-weight: 700;
-}
-
-.badge-compact {
-    font-size: 0.65rem;
-    font-family: var(--font-mono);
-    color: var(--accent-cyan);
-    background: rgba(6, 182, 212, 0.1);
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.control-row-inline {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-}
-
-.control-row-inline input {
-    width: 100%;
-    text-align: center;
-}
-
-/* ── Live Multilingual Preview Box ─────────────────── */
-
-.preview-box {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+.escape-warning {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid var(--accent-amber);
+    padding: 10px;
     border-radius: var(--radius-sm);
-    padding: 8px;
-    margin-top: 4px;
+    margin: 8px 0;
 }
-
-.preview-lang-tabs {
-    display: flex;
-    gap: 6px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 6px;
+.warning-text {
+    color: #fbbf24;
+    font-size: 0.8rem;
+    font-weight: 600;
     margin-bottom: 6px;
 }
-
-.preview-tab {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 4px;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: background var(--transition), color var(--transition);
-}
-
-.preview-tab:hover {
-    color: var(--text-primary);
-}
-
-.preview-tab.active {
-    background: rgba(59, 130, 246, 0.2);
-    color: var(--accent-blue);
-}
-
-.preview-content {
-    font-size: 0.75rem;
-    line-height: 1.4;
-    color: var(--text-secondary);
-    min-height: 40px;
-}
-
-.preview-content strong {
-    color: var(--accent-orange);
-}
-
-#dispatch-form {
+.checkbox-label {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 8px;
+    font-size: 0.8rem;
+    color: #ffffff;
+    cursor: pointer;
 }
 
-#dispatch-form label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.modal-disclaimer {
+    font-size: 0.72rem;
     color: var(--text-muted);
-}
-
-select, textarea, input[type="number"] {
-    background: var(--bg-input);
-    color: var(--text-primary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    font-family: var(--font-sans);
-    font-size: 0.85rem;
-    transition: border-color var(--transition);
-}
-
-select:focus, textarea:focus, input:focus {
-    outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: var(--glow-blue);
-}
-
-input[type="range"] {
-    accent-color: var(--accent-blue);
-    width: 100%;
-}
-
-output {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--accent-blue);
-    text-align: right;
-}
-
-#dispatch-btn {
+    font-style: italic;
     margin-top: 8px;
-    padding: 10px;
-    background: linear-gradient(135deg, var(--accent-red), #dc2626);
-    color: white;
-    font-weight: 700;
-    font-size: 0.85rem;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    line-height: 1.35;
 }
 
-#dispatch-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--glow-red);
-}
-
-#dispatch-btn:active {
-    transform: translateY(0);
-}
-
-#dispatch-result {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-    max-height: 120px;
-    overflow: auto;
-    color: var(--accent-green);
-    white-space: pre-wrap;
-    word-break: break-all;
-}
-
-/* ── BLE Over-the-Air Status Card ─────────────────── */
-.ble-ota-card {
-    margin-top: 12px;
-    padding: 10px 12px;
-    background: rgba(16, 185, 129, 0.05);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: var(--radius-sm);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    transition: all 0.2s ease;
-}
-
-.ble-ota-card.broadcasting {
-    background: rgba(16, 185, 129, 0.12);
-    border-color: rgba(16, 185, 129, 0.6);
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
-}
-
-.ble-ota-card.inactive {
-    background: rgba(255, 255, 255, 0.02);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-.ble-ota-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.75rem;
-    color: var(--text-primary);
-}
-
-.ble-ota-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    transition: all 0.3s;
-}
-
-.ble-ota-card.broadcasting .ble-ota-indicator {
-    background: var(--accent-green);
-    box-shadow: 0 0 8px var(--accent-green);
-    animation: blePulse 1.8s infinite;
-}
-
-@keyframes blePulse {
-    0% { transform: scale(0.9); opacity: 0.7; }
-    50% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(0.9); opacity: 0.7; }
-}
-
-.ble-ota-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-}
-
-.ble-served-badge {
-    background: rgba(16, 185, 129, 0.2);
-    color: var(--accent-green);
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 600;
-}
-
-.ble-ota-controls {
+.modal-footer {
     display: flex;
     justify-content: flex-end;
-    margin-top: 2px;
-}
-
-.ble-toggle-btn {
-    padding: 4px 10px;
-    font-size: 0.7rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
+    gap: 10px;
+    padding: 12px 18px;
     background: var(--bg-card);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.15s;
+    border-top: 1px solid var(--border);
 }
 
-.ble-toggle-btn:hover {
-    background: var(--border);
-}
-
-.hidden { display: none; }
-
-/* ── Sim Controls ────────────────────────────────── */
-
-#sim-controls h3 {
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.control-row {
+.error-list {
+    margin-left: 18px;
+    color: #f87171;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.control-row label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
-.control-row input {
-    width: 100px;
-    text-align: right;
-}
-
-#run-sim-btn {
-    width: 100%;
-    margin-top: 8px;
-    padding: 10px;
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-    color: white;
-    font-weight: 700;
-    font-size: 0.85rem;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition);
-}
-
-#run-sim-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--glow-blue);
-}
-
-#run-sim-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* ── Scrollbar ───────────────────────────────────── */
-
-#right-panel::-webkit-scrollbar { width: 6px; }
-#right-panel::-webkit-scrollbar-track { background: transparent; }
-#right-panel::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 3px;
-}
-
-/* ── Leaflet Tactical Dark Overrides ──────────────── */
-
-.leaflet-control-layers {
-    background: var(--bg-card) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: var(--radius-sm) !important;
-    font-size: 0.75rem !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-}
-
-.leaflet-control-layers-expanded {
-    padding: 8px 12px !important;
-}
-
-.leaflet-control-layers label {
-    color: var(--text-primary) !important;
-    font-family: var(--font-sans) !important;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 6px;
-    margin: 4px 0;
 }
 
-.leaflet-bar a {
-    background-color: var(--bg-card) !important;
-    color: var(--text-primary) !important;
-    border-bottom: 1px solid var(--border) !important;
+.hidden {
+    display: none !important;
 }
 
-.leaflet-bar a:hover {
-    background-color: var(--bg-panel) !important;
-}
+/* ── Responsive Stacking (WP 2.1) ────────────────────── */
+/* Under 900 px width, stack the columns with LIVE OPERATIONS first */
+@media (max-width: 900px) {
+    #console-grid {
+        grid-template-columns: 1fr;
+    }
 
+    #live-operations-col {
+        order: 1;
+    }
+
+    #coverage-planner-col {
+        order: 2;
+    }
+
+    .sim-controls-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #metric-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+}

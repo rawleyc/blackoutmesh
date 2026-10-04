@@ -34,20 +34,34 @@ object AlertCodec {
     fun hex(s: String): ByteArray =
         s.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 
-    /** Returns the alert if the packet is well formed, signed by our authority, and not expired. */
-    fun verifyAndParse(
+    sealed class VerificationResult {
+        data class Valid(val alert: Alert) : VerificationResult()
+        data class InvalidLength(val actual: Int, val expected: Int) : VerificationResult()
+        object InvalidSignature : VerificationResult()
+        data class InvalidVersion(val version: Int) : VerificationResult()
+        data class Expired(val issuedAt: Long, val validMinutes: Int, val nowSec: Long) : VerificationResult()
+    }
+
+    /** Returns detailed verification status to pinpoint exact rejection causes. */
+    fun verifyDetailed(
         raw: ByteArray,
         nowSec: Long = System.currentTimeMillis() / 1000
-    ): Alert? {
-        if (raw.size != PAYLOAD_LEN + SIG_LEN) return null
+    ): VerificationResult {
+        if (raw.size != PAYLOAD_LEN + SIG_LEN) {
+            return VerificationResult.InvalidLength(raw.size, PAYLOAD_LEN + SIG_LEN)
+        }
 
         val payload = raw.copyOfRange(0, PAYLOAD_LEN)
         val sig = raw.copyOfRange(PAYLOAD_LEN, raw.size)
-        if (!signatureOk(payload, sig)) return null
+        if (!signatureOk(payload, sig)) {
+            return VerificationResult.InvalidSignature
+        }
 
         val b = ByteBuffer.wrap(payload).order(ByteOrder.BIG_ENDIAN)
         val version = b.get().toInt() and 0xFF
-        if (version != 1) return null
+        if (version != 1) {
+            return VerificationResult.InvalidVersion(version)
+        }
 
         val msgId = b.int.toLong() and 0xFFFFFFFFL
         val issuedAt = b.int.toLong() and 0xFFFFFFFFL
@@ -55,9 +69,20 @@ object AlertCodec {
         val template = b.short.toInt() and 0xFFFF
         val param = b.short.toInt() and 0xFFFF
 
-        if (nowSec > issuedAt + valid * 60L) return null   // expired
+        if (nowSec > issuedAt + valid * 60L) {
+            return VerificationResult.Expired(issuedAt, valid, nowSec)
+        }
 
-        return Alert(msgId, issuedAt, valid, template, param, raw)
+        return VerificationResult.Valid(Alert(msgId, issuedAt, valid, template, param, raw))
+    }
+
+    /** Returns the alert if the packet is well formed, signed by our authority, and not expired. */
+    fun verifyAndParse(
+        raw: ByteArray,
+        nowSec: Long = System.currentTimeMillis() / 1000
+    ): Alert? = when (val res = verifyDetailed(raw, nowSec)) {
+        is VerificationResult.Valid -> res.alert
+        else -> null
     }
 
     private fun signatureOk(payload: ByteArray, sig: ByteArray): Boolean = try {
